@@ -11,19 +11,19 @@ int main(){
     printf("c");
     treeNode *c = addNode('c', 17);
     printf("d");
-    //treeNode *d = addNode('d', -5);
+    treeNode *d = addNode('d', -5);
     treeNode *e = addNode('e', 22);
     treeNode *f = addNode('f', 1);
-    //treeNode *g = addNode('g', 1000);
+    treeNode *g = addNode('g', 1000);
     // Zainicjuj kolejkę
     queue *q = initQue();
     addToQue(q, a->count, a);
     addToQue(q, b->count, b);
     addToQue(q, c->count, c);
-    //addToQue(q, d->count, d);
+    addToQue(q, d->count, d);
     addToQue(q, e->count, e);
     addToQue(q, f->count, f);
-    //addToQue(q, g->count, g);
+    addToQue(q, g->count, g);
 
     printf("Queue: ");    
 

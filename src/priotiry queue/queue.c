@@ -62,7 +62,7 @@ void addToQue(queue *q, int prior, treeNode *tree){
     
     // Przypisz kolejny element do newNode, wstaw newNode do kolejki
     newNode->next = q->head;  // tu wyskakuje seg fault (pewnie bo q->head->next nie istnieje bo q->head == NULL)
-    if(prevNode != originalHead)
+    if(q->head != originalHead)
     prevNode->next = newNode;
     else
     q->head = newNode;
