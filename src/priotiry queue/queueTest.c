@@ -1,20 +1,19 @@
+// Ten plik testuje poprawnie działającą kolejkę priorytetową
+
 #include "queue.h"
 #include <stdio.h>
 #include <stdlib.h>
 
 int main(){
-    // Stwórz 7 testowe węzły drzewa
-    printf("a");
+    // Stwórz 7 testowych węzłów drzewa
     treeNode *a = addNode('a', 13);
-    printf("b");
     treeNode *b = addNode('b', 10);
-    printf("c");
     treeNode *c = addNode('c', 17);
-    printf("d");
     treeNode *d = addNode('d', -5);
     treeNode *e = addNode('e', 22);
     treeNode *f = addNode('f', 1);
     treeNode *g = addNode('g', 1000);
+    
     // Zainicjuj kolejkę
     queue *q = initQue();
     addToQue(q, a->count, a);

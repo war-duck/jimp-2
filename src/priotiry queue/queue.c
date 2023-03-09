@@ -1,81 +1,70 @@
+// Ten plik zawiera implementację kolejki priorytetowej
+
 #include "queue.h"
 #include <stdlib.h>
 #include <stdio.h>
 
+// Zwraca true, jeżeli kolejka nie ma elementów
 int isEmpty(queue *q){
     return q->head == NULL;
 }
 
+// Zainicjowanie kolejki
 queue *initQue(){
     queue *newQue = malloc(sizeof *newQue);
     if (newQue != NULL){
-        newQue->head = NULL;
+        newQue->head = NULL;    
         newQue->tail = NULL;
     }
     return newQue;
 }
 
+// Dodaje nowy element do kolejki w odpowiednie miejsce
 void addToQue(queue *q, int prior, treeNode *tree){
-    printf("x");
-    queNode *newNode = malloc(sizeof *newNode);
-    queNode *originalHead = q->head;
-    queNode *prevNode = q->head;
-    int i = 0;
-    if(newNode == NULL)
+    queNode *newNode = malloc(sizeof *newNode); // Nowy element do dodania
+    queNode *originalHead = q->head;            // Zapamiętuje początkowy adres początku kolejki
+    queNode *prevNode = q->head;                // Zapamiętuje poprzedni element w kolejce (służy w iteracji)
+    int hasMoved = 0;                           // Flaga mówiąca, czy przesunęliśmy head
+                        // Taki sam efekt można podając równanie prevNode == q->head, ale tak jest przejrzyściej
+
+    if(newNode == NULL)                         // Brak miejsca
         return;
     
+    // Inicjowanie nowego elementu
     newNode->prior = prior;
     newNode->value = tree;
     newNode->next = NULL;
+
+    // Jeżeli kolejka jej pusta, to pierwszy element będzie jej głową i końcem
     if(isEmpty(q)){
         q->head = newNode;
         q->tail = newNode;
         return;
     }
     
-    // Znajdź element o niższym numerze (prior) w kolejce
-    // Nie działa: jeżeli q->head->next == NULL a q->head->prior < prior, to program dopisze nowNode w złe miejsce
+    // Znajdź element o priority wyższym, niż nowego elementu
     while(q->head->prior < prior){
-        printf("%d", i);
-        // jeżeli doszliśmy do końca
-        if(q->head == q->tail){
-            if(q->head->prior < prior){ // wstaw na koniec
-                q->head->next = newNode;
-                q->tail = newNode;
-                if(i == 1)
-                    q->head = originalHead;
-                return;
-            }
-            else{   // wstaw jako przedostatnie
-                newNode->next = q->head;
-                prevNode->next = newNode;
-                if(i == 1)
-                    q->head = originalHead;
-                return;
-            }
-        }
-        prevNode = q->head;
-        q->head = q->head->next;    // Przejdź dalej
-        i = 1;
         
+        if(q->head == q->tail){             // Jeżeli doszliśmy do końca kolejki
+                q->head->next = newNode;    // Wstaw go na koniec
+                q->tail = newNode;
+                if(hasMoved == 1)           // Jeżeli zmieniliśmy q->head
+                    q->head = originalHead; // Przywróć go do początku
+                return;
+        }
+        prevNode = q->head;                 // Zapisz poprzedni element
+        q->head = q->head->next;            // Przejdź dalej
+        hasMoved = 1;
     }
     
     // Przypisz kolejny element do newNode, wstaw newNode do kolejki
-    newNode->next = q->head;  // tu wyskakuje seg fault (pewnie bo q->head->next nie istnieje bo q->head == NULL)
+    newNode->next = q->head;                // Dopisz każdy kolejny element kolejki jako następujące po nowym elemencie
     if(q->head != originalHead)
-    prevNode->next = newNode;
+        prevNode->next = newNode;           // Wstaw nowy element
     else
-    q->head = newNode;
+        q->head = newNode;                  // Wstaw nowy element na początku, jeżeli jego priorytet jest najwyższy (najmniejsza liczba)
 
 
-    if(i == 1)
-        q->head = originalHead;
-    // if(q->head == originalHead){
-    //     return;
-    // }
-
-
-
-    // Jeżeli newNode jest ostatnim elementem, zapisz to w tail
-
+    if(hasMoved == 1)
+        q->head = originalHead;             // Zwróć q->head na początkowy adres
 }
