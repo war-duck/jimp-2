@@ -5,10 +5,11 @@
 
 typedef struct treeNode{
     char c;
+    int count;
     struct treeNode *left;
     struct treeNode *right;
 } treeNode;
 
-treeNode *addNode(char);
+treeNode *addNode(char, int);
 
 #endif

@@ -2,10 +2,11 @@
 #include <stdlib.h>
 
 // tworzy węzeł
-treeNode *addNode(char c){
-    treeNode *node = malloc(sizeof node);
+treeNode *addNode(char c, int num){
+    treeNode *node = malloc(sizeof *node);
     if(node != NULL){
         node->c = c;
+        node->count = num;
         node->left = NULL;
         node->right = NULL;
     }
