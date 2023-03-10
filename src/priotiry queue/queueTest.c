@@ -13,6 +13,7 @@ int main(){
     treeNode *e = addNode('e', 22);
     treeNode *f = addNode('f', 1);
     treeNode *g = addNode('g', 1000);
+    treeNode *h = addNode('h', -5);
     
     // Zainicjuj kolejkę
     queue *q = initQue();
@@ -23,6 +24,7 @@ int main(){
     addToQue(q, e->count, e);
     addToQue(q, f->count, f);
     addToQue(q, g->count, g);
+    addToQue(q, h->count, h);
 
     printf("Queue: ");    
 
