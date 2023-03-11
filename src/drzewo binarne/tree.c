@@ -12,3 +12,18 @@ treeNode *addNode(char c, int num){
     }
     return node;
 }
+
+// łączy 2 węzły w jeden
+treeNode *joinNodes(treeNode *first, treeNode *second){
+    treeNode *newNode = malloc(sizeof *newNode);
+    if(newNode == NULL)
+        return NULL;
+    
+    newNode->c = -1;    // oznaczenie, że nowy węzeł nie zawiera żadnego znaku
+                        // znaki zawierają jedynie liście drzewa
+    newNode->count = first->count + second->count;
+    newNode->left = first;
+    newNode->right = second;
+
+    return newNode;
+}

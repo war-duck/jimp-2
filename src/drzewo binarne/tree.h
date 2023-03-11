@@ -11,5 +11,6 @@ typedef struct treeNode{
 } treeNode;
 
 treeNode *addNode(char, int);
+treeNode *joinNodes(treeNode*, treeNode*);
 
 #endif
