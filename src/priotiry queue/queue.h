@@ -1,8 +1,5 @@
 // W tym pliku znajduje się struktura Priority Queue i prototypy funkcji
 
-// UWAGA należy dodać funkcję, która łączy dwa elementy (drzewa) z kolejki
-// w jedno nowe drzewo i wstawia je w odpowiednie miejsce
-
 #ifndef QUEUE_H
 #define QUEUE_H
 
@@ -20,6 +17,6 @@ typedef struct queue{      // Struktura "kolejki" - ma wskaźniki na początek i
 } queue;
 
 queue *initQue();
-void addToQue(queue*, int, treeNode*);
+void addToQue(queue*, treeNode*);
 int isEmpty();
 #endif

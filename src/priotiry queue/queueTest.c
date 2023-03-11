@@ -17,14 +17,14 @@ int main(){
     
     // Zainicjuj kolejkę
     queue *q = initQue();
-    addToQue(q, a->count, a);
-    addToQue(q, b->count, b);
-    addToQue(q, c->count, c);
-    addToQue(q, d->count, d);
-    addToQue(q, e->count, e);
-    addToQue(q, f->count, f);
-    addToQue(q, g->count, g);
-    addToQue(q, h->count, h);
+    addToQue(q, a);
+    addToQue(q, b);
+    addToQue(q, c);
+    addToQue(q, d);
+    addToQue(q, e);
+    addToQue(q, f);
+    addToQue(q, g);
+    addToQue(q, h);
 
     printf("Queue: ");    
 

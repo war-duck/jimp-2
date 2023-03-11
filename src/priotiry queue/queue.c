@@ -20,7 +20,8 @@ queue *initQue(){
 }
 
 // Dodaje nowy element do kolejki w odpowiednie miejsce
-void addToQue(queue *q, int prior, treeNode *tree){
+void addToQue(queue *q, treeNode *tree){
+    int prior = tree->count;
     queNode *newNode = malloc(sizeof *newNode); // Nowy element do dodania
     queNode *originalHead = q->head;            // Zapamiętuje początkowy adres początku kolejki
     queNode *prevNode = q->head;                // Zapamiętuje poprzedni element w kolejce (służy w iteracji)
