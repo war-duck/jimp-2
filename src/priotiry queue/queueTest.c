@@ -31,7 +31,6 @@ int main(){
     while(q->head != NULL){
         printf("%d ",q->head->prior);
         q->head = q->head->next;
-        //free(q->head);
     }
 
     return 0;

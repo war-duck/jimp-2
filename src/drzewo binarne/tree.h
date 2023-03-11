@@ -12,5 +12,6 @@ typedef struct treeNode{
 
 treeNode *addNode(char, int);
 treeNode *joinNodes(treeNode*, treeNode*);
+void printTree(treeNode*);
 
 #endif
