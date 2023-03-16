@@ -5,42 +5,26 @@
 #include <getopt.h>
 
 int main(int argc, char **argv) {
-
+    FILE *in = NULL;
+    FILE *out = NULL;
     int opcja=0;
 
     while((opcja = getopt(argc, argv, "i:o:th"))) {
         switch (opcja) {
         case 'i':
             if(optarg != NULL) {
-                FILE *in = fopen(optarg, "r");
-                if(in == NULL) {
-                    printf("Nie mozna odczytywac z danego pliku.\n");
-                    return 3;
-                }
-                else {
-                    printf("Znaleziono plik.\n");
-                    //tutaj będzie wywoływana funkcja wczytywania z pliku
-                }
+                in = fopen(optarg, "r");
                 break;
             }
         
         case 'o':
             if(optarg != NULL) {
-                FILE *out = fopen(optarg, "w"); //jezeli plik nie istnieje to go tworzy
-                if( out == NULL) {
-                    printf("Brak uprawnień do zapisu w danym pliku.");
-                    return 4;
-                }
-                else {
-                    printf("Wypisuje do pliku: %s", optarg);
-                    //tutaj będzie wywoływana funkcja wypisywania do pliku
-                }
+                out = fopen(optarg, "w"); //jezeli plik nie istnieje to go tworzy
                 break;
             }
         
         case 't':
-            printf("Wczytywanie z konsoli.\n");
-            //tutaj będzie wywoływana funkcja wczytywania z konsoli
+            in = stdin;
             break;
 
         case 'h':
@@ -49,8 +33,32 @@ int main(int argc, char **argv) {
             printf("-i <plik> - wczytywanie danych z pliku\n");
             printf("-o <plik> - wypisywanie danych do pliku\n");
             printf("-t <dane> - wczytywanie danych z konsoli\n");
-        
+            break;
+
         default:
+            //sprawdzenie wejscia
+            if(in == NULL) {
+                printf("Nie mozna odczytywac z danego pliku.\n");
+                return 3;
+            }
+            else if (in == stdin) {
+                printf("Wczytywanie z konsoli.\n");
+            }
+            else {
+                printf("Przyjalem plik wejsciowy\n");
+            }
+
+            //sprawdzenie wyjscia
+            if( out == NULL) {
+                printf("Niewlasciwy format pliku wyjsciowego.\n");
+                return 4;
+            }
+            else {
+                printf("Przyjalem plik wyjsciowy.\n");
+            }
+
+            //tutaj bedzie wywolywana funkcja glowna programu w formacie np. funkcja(plik we/stdin, plik wy)
+            
             return 0;
         }
     }
