@@ -3,7 +3,6 @@
 #ifndef TREE_H
 #define TREE_H
 
-#include "..\priotiry queue\queue.h"
 
 typedef struct treeNode{
     unsigned char c;
@@ -15,7 +14,7 @@ typedef struct treeNode{
 
 treeNode *addNode(unsigned char, int);
 treeNode *joinNodes(treeNode*, treeNode*);
-treeNode *makeTree(queue*);
+
 void printTree(treeNode*);
 
 #endif

@@ -1,5 +1,5 @@
 // Ten plik zawiera implementację kolejki priorytetowej
-
+#include "tree.h"
 #include "queue.h"
 #include <stdlib.h>
 #include <stdio.h>

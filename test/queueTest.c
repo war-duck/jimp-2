@@ -1,6 +1,7 @@
 // Ten plik testuje poprawnie działającą kolejkę priorytetową
-
-#include "queue.h"
+//#include "tree.h"
+//#include "queue.h"
+#include "makeTree.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -28,10 +29,10 @@ int main(){
 
     printf("Queue: ");    
 
-    while(q->head != NULL){
-        printf("%d ",q->head->prior);
-        q->head = q->head->next;
-    }
+    // while(q->head != NULL){
+    //     printf("%d ",q->head->prior);
+    //     q->head = q->head->next;
+    // }
 
     treeNode *root = makeTree(q);
     printTree(root);

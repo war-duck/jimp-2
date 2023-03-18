@@ -2,8 +2,8 @@
 
 #ifndef QUEUE_H
 #define QUEUE_H
+#include "tree.h"
 
-#include "../drzewo binarne/tree.h"
 
 typedef struct queNode{    // Struktura pojedynczego elementu w kolejce
     struct queNode *next;
