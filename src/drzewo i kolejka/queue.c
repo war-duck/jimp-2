@@ -20,9 +20,9 @@ queue *initQue(){
 }
 
 // Dodaje nowy element do kolejki w odpowiednie miejsce
-void addToQue(queue *q, treeNode *tree){
+void addToQue(queue *q, struct treeNode *tree){
     int prior = tree->count;
-    queNode *newNode = malloc(sizeof *newNode); // Nowy element do dodania
+    queNode *newNode = malloc(sizeof *newNode); // Nowy element do dodania do kolejki
     queNode *originalHead = q->head;            // Zapamiętuje początkowy adres początku kolejki
     queNode *prevNode = q->head;                // Zapamiętuje poprzedni element w kolejce (służy w iteracji)
     int hasMoved = 0;                           // Flaga mówiąca, czy przesunęliśmy head
@@ -33,7 +33,7 @@ void addToQue(queue *q, treeNode *tree){
     
     // Inicjowanie nowego elementu
     newNode->prior = prior;
-    newNode->value = tree;
+    newNode->tree = tree;
     newNode->next = NULL;
 
     // Jeżeli kolejka jej pusta, to pierwszy element będzie jej głową i końcem
@@ -67,9 +67,10 @@ void addToQue(queue *q, treeNode *tree){
 
 
     if(hasMoved == 1)
-        q->head = originalHead;             // Zwróć q->head na początkowy adres
+        q->head = originalHead;             // Przywróć q->head na początkowy adres
 }
 
+// Przesuwa kolejkę o 2 miejsca do przodu
 void moveQueue(queue *q){
     queNode *tmp = q->head->next->next;
     free(q->head->next);
