@@ -15,6 +15,7 @@ queue *initQue(){
     if (newQue != NULL){
         newQue->head = NULL;    
         newQue->tail = NULL;
+        newQue->size = 0;
     }
     return newQue;
 }
@@ -35,6 +36,9 @@ void addToQue(queue *q, struct treeNode *tree){
     newNode->prior = prior;
     newNode->tree = tree;
     newNode->next = NULL;
+
+    if(tree->is_leaf)
+        q->size++;
 
     // Jeżeli kolejka jej pusta, to pierwszy element będzie jej głową i końcem
     if(isEmpty(q)){

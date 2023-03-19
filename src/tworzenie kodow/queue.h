@@ -16,6 +16,7 @@ typedef struct queNode{    // Struktura pojedynczego elementu w kolejce
 typedef struct queue{      // Struktura "kolejki" - ma wskaźniki na początek i koniec
     queNode *head;
     queNode *tail;
+    int size;              // Liczba unikalnych znaków (liści drzewa)
 } queue;
 
 queue *initQue();
