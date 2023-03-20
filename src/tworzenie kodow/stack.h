@@ -1,10 +1,11 @@
 // Ten plik zawiera deklaracje stosu, potrzebnego do tworzenia kodów z drzewa binarnego
 #ifndef STACK_H
 #define STACK_H
+#include <stdlib.h>
 
 typedef struct{
     int* vec;
-    int size;
+    size_t size;
     int index;
 } stack_t;
 

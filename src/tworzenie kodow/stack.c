@@ -17,16 +17,16 @@ stack_t *initialize_stack(){
 // Powiększa wielkość stosu o 16
 static void resize_stack(stack_t* stack){
     stack->size += 16;
-    stack->vec = realloc(stack->size, stack->vec);
+    stack->vec = realloc(stack->vec, stack->size * sizeof *stack->vec);
 }
 
 // Odkłada n na stos
 void put(stack_t* stack, int n){
-    if(stack->index == stack->size)
+    if(stack->index == stack->size - 1)
         resize_stack(stack);
     
-    stack->vec[stack->index] = n;
     stack->index++;
+    stack->vec[stack->index] = n;
 }
 
 // Zwraca element na górze stosu
