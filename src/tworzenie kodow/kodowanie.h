@@ -3,6 +3,6 @@
 
 #include "tree.h"
 
-char** make_codes(treeNode*);
+char** make_codes(treeNode*, int);
 
 #endif

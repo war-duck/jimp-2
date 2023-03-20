@@ -30,8 +30,10 @@ int main(){
     treeNode *root = makeTree(q);
     printTree(root);
 
-    char **dict[2] = make_codes;
+    char **dict[2] = make_codes(root, q->size);
 
+    for(int i = 0; i < q->size; i++)
+        printf("%s - %s", dict[0][i], dict[1][i]);
     free(q->head);
     free(q);
     free(dict[0]);
