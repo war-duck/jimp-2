@@ -28,12 +28,16 @@ int main(){
 
     // Utwórz i wyświetl drzewo
     treeNode *root = makeTree(q);
-    printTree(root);
 
-    char **dict[2] = make_codes(root, q->size);
+    char **dict[2];
+    dict[0] = malloc(sizeof *dict[0]);
+    dict[1] = malloc(sizeof *dict[0]);
+
+    make_codes(root, q->size, dict);
 
     for(int i = 0; i < q->size; i++)
         printf("%s - %s", dict[0][i], dict[1][i]);
+        
     free(q->head);
     free(q);
     free(dict[0]);

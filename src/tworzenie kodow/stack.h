@@ -4,13 +4,15 @@
 #include <stdlib.h>
 
 typedef struct{
-    int* vec;
+    char* vec;
     size_t size;
     int index;
 } stack_t;
 
 stack_t *initialize_stack();
-void put(stack_t*, int);
-int pop(stack_t*);
+void put(stack_t*, char);
+char pop(stack_t*);
+char* get_code(stack_t*);
+void free_stack(stack_t*);
 
 #endif
