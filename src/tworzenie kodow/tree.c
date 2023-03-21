@@ -18,8 +18,13 @@ treeNode *makeTreeNode(unsigned char c, int num){
 }
 
 void get_char(treeNode *tree, char** dict[2], int index){
-    dict[0][index] = malloc(sizeof *(dict[0][index]));
+    printf("in: get_char %d\n", index);
+    // dict[0][index] = malloc(20 * sizeof(char));
+    // printf("Allocated memory\n");
     dict[0][index][0] = tree->c;
+    printf("Added char\n");
+    dict[0][index][1] = '\0';
+    printf("out: get_char %d\n", index);
 }
 
 // łączy 2 węzły drzewa w jeden

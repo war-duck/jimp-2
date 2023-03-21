@@ -29,15 +29,19 @@ int main(){
     // Utwórz i wyświetl drzewo
     treeNode *root = makeTree(q);
 
+    printf("size: %d\n", q->size);
     char ***dict;
     dict = malloc(2 * sizeof(char**));
-    dict[0] = malloc(q->size * sizeof(char*));
-    dict[1] = malloc(q->size * sizeof(char*));
+    dict[0] = malloc(8 * sizeof(char*));
+    dict[1] = malloc(8 * sizeof(char*));
+    for(int i = 0; i < 8; i++){
+        dict[0][i] = malloc(20 * sizeof (char));
+        //dict[1][i] = malloc(20 * sizeof (char));
+    }
 
     make_codes(root, q->size, dict);
-
     for(int i = 0; i < q->size; i++)
-        printf("%s - %s", dict[0][i], dict[1][i]);
+        printf("%s - %s\n", dict[0][i], dict[1][i]);
 
     free(q->head);
     free(q);

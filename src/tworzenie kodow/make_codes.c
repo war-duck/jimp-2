@@ -7,21 +7,24 @@
 
 static void traverse(treeNode *root, stack_t* stack, char** dict[2], int* index){
     if(root->left != NULL){
+        printf("left->\n");
         put(stack, '0');
         traverse(root->left, stack, dict, index);
-        free(root->left);
+        //free(root->left);
     }        
     if(root->right != NULL){
+        printf("right->\n");
         put(stack, '1');
         traverse(root->right, stack, dict, index);
-        free(root->right);
+        //free(root->right);
     }
     if(root->is_leaf){
         get_char(root, dict, *index);
         get_code(stack, dict, *index);
         (*index)++;       
-        pop(stack);
     }
+    pop(stack);
+    printf("^up^\n");
 }
 
 void make_codes(treeNode *root, int code_num, char** dict[2]){
