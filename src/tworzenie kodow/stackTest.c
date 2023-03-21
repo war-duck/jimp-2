@@ -24,9 +24,9 @@ int main(){
 
     put(stos, '6');
     put(stos, '7');
-    printf("%s\n", get_code(stos));
     for(int i = 0; i < 20; i++)
         printf("%c ", pop(stos));
+        
     free_stack(stos);
     return 0;
 }
