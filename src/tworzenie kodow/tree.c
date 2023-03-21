@@ -17,6 +17,11 @@ treeNode *makeTreeNode(unsigned char c, int num){
     return node;
 }
 
+void get_char(treeNode *tree, char** dict[2], int index){
+    dict[0][index] = malloc(sizeof *(dict[0][index]));
+    dict[0][index][0] = tree->c;
+}
+
 // łączy 2 węzły drzewa w jeden
 treeNode *joinNodes(treeNode *first, treeNode *second){
     treeNode *newNode = malloc(sizeof *newNode);

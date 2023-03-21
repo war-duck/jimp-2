@@ -1,24 +1,26 @@
-#include "kodowanie.h"
+#include "make_codes.h"
 #include "stack.h"
 #include "tree.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
-static void traverse(treeNode *root, stack_t* stack, char*** dict, int* index){
+static void traverse(treeNode *root, stack_t* stack, char** dict[2], int* index){
     if(root->left != NULL){
         put(stack, '0');
         traverse(root->left, stack, dict, index);
+        free(root->left);
     }        
     if(root->right != NULL){
         put(stack, '1');
         traverse(root->right, stack, dict, index);
+        free(root->right);
     }
     if(root->is_leaf){
-        char str[2] = {root->c, '\0'};
-        strcpy(dict[0][*index], str);
-        dict[1][*index] = get_code(stack);
-        *index++;
+        get_char(root, dict, *index);
+        get_code(stack, dict, *index);
+        (*index)++;       
+        pop(stack);
     }
 }
 

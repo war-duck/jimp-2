@@ -1,4 +1,4 @@
-#include "kodowanie.h"
+#include "make_codes.h"
 #include "queue.h"
 #include "tree.h"
 #include <stdio.h>
@@ -29,15 +29,16 @@ int main(){
     // Utwórz i wyświetl drzewo
     treeNode *root = makeTree(q);
 
-    char **dict[2];
-    dict[0] = malloc(sizeof *dict[0]);
-    dict[1] = malloc(sizeof *dict[0]);
+    char ***dict;
+    dict = malloc(2 * sizeof(char**));
+    dict[0] = malloc(q->size * sizeof(char*));
+    dict[1] = malloc(q->size * sizeof(char*));
 
     make_codes(root, q->size, dict);
 
     for(int i = 0; i < q->size; i++)
         printf("%s - %s", dict[0][i], dict[1][i]);
-        
+
     free(q->head);
     free(q);
     free(dict[0]);

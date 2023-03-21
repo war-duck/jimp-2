@@ -1,5 +1,5 @@
-#ifndef KODOWANIE_H
-#define KODOWANIE_H
+#ifndef MAKE_CODES_H
+#define MAKE_CODES_H
 
 #include "tree.h"
 

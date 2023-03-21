@@ -15,6 +15,7 @@ typedef struct treeNode{
     struct treeNode *right;
 } treeNode;
 
+void get_char(treeNode*, char** dict[2], int);
 treeNode *makeTreeNode(unsigned char, int);
 treeNode *joinNodes(treeNode*, treeNode*);
 treeNode *makeTree(struct queue* q);

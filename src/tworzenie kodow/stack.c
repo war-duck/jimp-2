@@ -41,11 +41,16 @@ char pop(stack_t* stack){
 }
 
 // Zwraca uzyskany kod
-char* get_code(stack_t *stack){
-    char* code = malloc((stack->index + 1) * sizeof *code);
-    strcpy(code, stack->vec);
-    code[stack->index + 1] = '\0';
-    return code;
+void get_code(stack_t *stack, char** dict[2], int index){
+    dict[1][index] = malloc((stack->index + 1) * sizeof *dict[1][index]);
+    //char* code = malloc((stack->index + 1) * sizeof *code);
+    //strcpy(code, stack->vec);
+    //strcpy(dict[1][index], code);
+    //dict[1][index][stack->index + 1] = '\0';
+    //free(code);
+    for(int i = 0; i < stack->index + 1; i++)
+        dict[1][index][i] = stack->vec[i];
+    dict[1][index][stack->index + 1] = '\0';
 }
 
 void free_stack(stack_t *stack){
