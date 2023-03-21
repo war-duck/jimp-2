@@ -3,15 +3,22 @@
 #ifndef TREE_H
 #define TREE_H
 
+#include "queue.h"
+
+struct queue;
+
 typedef struct treeNode{
-    char c;
+    unsigned char c;
+    int is_leaf;
     int count;
     struct treeNode *left;
     struct treeNode *right;
 } treeNode;
 
-treeNode *addNode(char, int);
+void get_char(treeNode*, char** dict[2], int);
+treeNode *makeTreeNode(unsigned char, int);
 treeNode *joinNodes(treeNode*, treeNode*);
+treeNode *makeTree(struct queue* q);
 void printTree(treeNode*);
 
 #endif
