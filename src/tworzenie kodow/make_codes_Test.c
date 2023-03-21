@@ -35,7 +35,7 @@ int main(){
     dict[0] = malloc(8 * sizeof(char*));
     dict[1] = malloc(8 * sizeof(char*));
     for(int i = 0; i < 8; i++){
-        dict[0][i] = malloc(20 * sizeof (char));
+        // dict[0][i] = malloc(20 * sizeof (char));
         //dict[1][i] = malloc(20 * sizeof (char));
     }
 
