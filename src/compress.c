@@ -75,8 +75,8 @@ int compress (unsigned char* uncomp , int len, data_struct* message, code_struct
     }
     message->len = cpos - message->data + (cur_byte_pos ? 1 : 0); // ustawiamy poprawną długość danych wyjściowych
     message->byte_pos = cur_byte_pos;
-    // print_str_in_bin(message->data, message->len, 1);
-    // printf ("nr wolengeo bitu: %d, dlugosc zakodowana: %d\n", message->byte_pos, message->len);
+    print_str_in_bin(message->data, message->len, 1);
+    printf ("nr wolengeo bitu: %d, dlugosc zakodowana: %d\n", message->byte_pos, message->len);
 }
 int main()
 {
