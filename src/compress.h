@@ -9,11 +9,11 @@ typedef struct
 
 typedef struct
 {
-    unsigned char* data;
-    long len;
-    long max_size;
-    short byte_pos; // jeżeli == 0, to cały bajt data[len-1] jest zajęty.
-                    // jeżeli != 0, to część bajtu data[len-1] jest zajęta, należy dopełnić
+    unsigned char* data; // surowe dane
+    long len;            // długość w bajtach zakodowanych danych (len(data))
+    long max_size;       // rozmiar zaalokowany
+    short byte_pos; // jeżeli == 0, to cały ostatni bajt (data[len-1]) jest zajęty.
+                    // jeżeli != 0, to część bajtu data[len-1] jest zajęta, należy przejść do kolejnego bitu
 } data_struct; // przechowuje zakodowaną treść pliku wejściowego
 
 #endif
