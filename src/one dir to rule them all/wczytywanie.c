@@ -1,46 +1,49 @@
 // Ten kod poprawnie wczytuje bajty z pliku wejściowego i zapisuje je w wektorze unsigned char* c
 // Kod można potem przekopiować (z dorbnymi edycjami) do większego programu
 
-#include <stdio.h>
-#include <stdlib.h>
+#include "wczytywanie.h"
 
-int main(int argc, char** argv){
+unsigned long wczytaj(FILE* in, struct input_data_info* input){ // zwraca ilość wczytanych bajtów
 
-    int i;
-    unsigned char *c;
-    unsigned int *num;  // Liczba występowania poszczególnych bajtów
-    long length;        // Długość pliku w bajtach
+    unsigned long i;
+    unsigned long read = 0;      // Aktualna ilość wczytanych bajtów (w tej iteracji)
+    input->num = calloc(256, sizeof *input->num);
 
     // Otwieranie pliku wejściowego
-    FILE *in = fopen(argv[1], "rb");
-    if (in == NULL)
-        return 1;
+    // FILE *in = fopen(argv[1], "rb");
+    // if (in == NULL)
+    //     return 1;
+    // fseek(in, 0, SEEK_END);     // Ustaw wskaźnik na koniec pliku
+    // input->length += ftell(in);
+    // printf("Wielkosc pliku w bajtach: %d\n", input->length);   // Komunikat testowy
+    // fseek(in, 0, SEEK_SET);     // Ustaw wskaźnik z powrotem na początek pliku
+    //input->data = malloc(BUFFOR_SIZE * sizeof(*input->data)); // nie warto osobno alokować z każdym wywołaniem funkcji, wywaliłem do nadfunkcji compress()
+    //size_t liczba_odczyt = fread(input->data, sizeof(*input->data), input->length, in);   // Wczytaj treść pliku
+    // printf("Liczba odczytanych bajtów: %d\n", liczba_odczyt);
+    // printf("Wczytana tresc (tekstowa): %s\n", input->data);
+    // input->num = calloc(256, sizeof *input->num);
 
-    fseek(in, 0, SEEK_END);     // Ustaw wskaźnik na koniec pliku
-    length = ftell(in);         
-    printf("Wielkosc pliku w bajtach: %d\n", length);   // Komunikat testowy
-    fseek(in, 0, SEEK_SET);     // Ustaw wskaźnik z powrotem na początek pliku
-
-    c = malloc(length * sizeof(*c));
-    size_t liczba_odczyt = fread(c, sizeof(*c), length, in);   // Wczytaj treść pliku
-
-    printf("Liczba odczytanych bajtów: %d\n", liczba_odczyt);
-    printf("Wczytana tresc (tekstowa): %s\n", c);
-
-    num = calloc(256, sizeof *num);
-
-    // Policz występowanie poszczególnych bajtów
-    for(i = 0; i < length; i++){
-        num[c[i]]++;
-    }
+    read = fread(input->data, sizeof(*input->data), input->BUFFER_SIZE, in);
+    printf ("read: %d\n", read);
+    // if((input->length - read) > input->BUFFER_SIZE){
+    //     printf("Wczytana tresc (tekstowa): %s\n", input->data);
+    //     for(i = 0; i < input->BUFFER_SIZE; i++)
+    //         input->num[input->data[i]]++;    // Zlicz występowanie znaków
+    // }
+    // else{
+    //     printf("Wczytana tresc (tekstowa): %s\n", input->data);
+    //     for(i = 0; i < read; i++)
+    //         input->num[input->data[i]]++;    // Zlicz występowanie znaków
+    // }
+    printf("Wczytana tresc (tekstowa): %s\n", input->data);
+    for(i = 0; i < read; i++)
+        input->num[input->data[i]]++;    // Zlicz występowanie znaków
 
     printf("Czestotliwosc wystepowania konkretnych bajtow:\n");
     for(i = 0; i < 256; i++)
-        printf("%x - %d\n", i, i, num[i]);
-    
-    free(c);
-    free(num);
-    fclose(in);
+        if (input->num[i])
+            printf("%c - %d\n", i, input->num[i]);
 
-    return 0;
+    input->length += read;
+    return read;
 }
