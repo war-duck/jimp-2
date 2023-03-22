@@ -4,12 +4,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define BUFFOR_SIZE 52428800 // 50 MB
+
 int main(int argc, char** argv){
 
     int i;
     unsigned char *c;
     unsigned int *num;  // Liczba występowania poszczególnych bajtów
     long length;        // Długość pliku w bajtach
+    long read = 0;      // Aktualna ilość wczytanych bajtów
 
     // Otwieranie pliku wejściowego
     FILE *in = fopen(argv[1], "rb");
@@ -21,23 +24,28 @@ int main(int argc, char** argv){
     printf("Wielkosc pliku w bajtach: %d\n", length);   // Komunikat testowy
     fseek(in, 0, SEEK_SET);     // Ustaw wskaźnik z powrotem na początek pliku
 
-    c = malloc(length * sizeof(*c));
-    size_t liczba_odczyt = fread(c, sizeof(*c), length, in);   // Wczytaj treść pliku
-
-    printf("Liczba odczytanych bajtów: %d\n", liczba_odczyt);
-    printf("Wczytana tresc (tekstowa): %s\n", c);
-
+    c = malloc(BUFFOR_SIZE * sizeof *c);  // Zaalokuj 50 MB pamięci
     num = calloc(256, sizeof *num);
 
-    // Policz występowanie poszczególnych bajtów
-    for(i = 0; i < length; i++){
-        num[c[i]]++;
+    // Przeczytaj treść
+    while(read != length){
+        if((length - read) > BUFFOR_SIZE){
+            read += fread(c, sizeof(*c), BUFFOR_SIZE, in);
+            for(i = 0; i < BUFFOR_SIZE; i++)
+                num[c[i]]++;    // Zlicz występowanie znaków
+        }
+        else{
+            read += fread(c, sizeof(*c), (length - read), in);
+            for(i = 0; i < (length - read); i++)
+                num[c[i]]++;    // Zlicz występowanie znaków
+        }
     }
 
+    printf("Liczba odczytanych bajtów: %d\n", read);
     printf("Czestotliwosc wystepowania konkretnych bajtow:\n");
     for(i = 0; i < 256; i++)
-        printf("%x - %d\n", i, i, num[i]);
-    
+        printf("%x - %d\n", i, num[i]);
+
     free(c);
     free(num);
     fclose(in);
