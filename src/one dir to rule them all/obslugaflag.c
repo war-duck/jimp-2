@@ -3,17 +3,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <getopt.h>
+#include "wczytywanie.h"
 
 int main(int argc, char **argv) {
     FILE *in = NULL;
     FILE *out = NULL;
+    unsigned char *c;
+    unsigned int *num;  // Liczba występowania poszczególnych bajtów
     int opcja=0;
 
-    while((opcja = getopt(argc, argv, "i:o:th"))) {
+    while((opcja = getopt(argc, argv, "i:o:tdh"))) {
         switch (opcja) {
         case 'i':
             if(optarg != NULL) {
-                in = fopen(optarg, "r");
+                in = fopen(optarg, "rb");
                 break;
             }
         
@@ -45,7 +48,7 @@ int main(int argc, char **argv) {
                 printf("Wczytywanie z konsoli.\n");
             }
             else {
-                printf("Przyjalem plik wejsciowy\n");
+                printf("Przyjeto plik wejsciowy\n");
             }
 
             //sprawdzenie wyjscia
@@ -54,10 +57,14 @@ int main(int argc, char **argv) {
                 return 4;
             }
             else {
-                printf("Przyjalem plik wyjsciowy.\n");
+                printf("Przyjeto plik wyjsciowy.\n");
             }
 
-            //tutaj bedzie wywolywana funkcja glowna programu w formacie np. funkcja(plik we/stdin, plik wy)
+            wczytaj(in, c, num);
+
+            free(c);
+            free(num);
+            fclose(in);
             
             return 0;
         }

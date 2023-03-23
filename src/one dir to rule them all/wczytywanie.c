@@ -3,25 +3,20 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "wczytywanie.h"
 
 #define BUFFOR_SIZE 52428800 // 50 MB
-
-int main(int argc, char** argv){
-
+#define DEBUG
+void wczytaj(FILE *in, unsigned char *c, unsigned int *num) {
     int i;
-    unsigned char *c;
-    unsigned int *num;  // Liczba występowania poszczególnych bajtów
     long length;        // Długość pliku w bajtach
     long read = 0;      // Aktualna ilość wczytanych bajtów
 
-    // Otwieranie pliku wejściowego
-    FILE *in = fopen(argv[1], "rb");
-    if (in == NULL)
-        return 1;
-
     fseek(in, 0, SEEK_END);     // Ustaw wskaźnik na koniec pliku
-    length = ftell(in);         
+    length = ftell(in);
+#ifdef DEBUG   
     printf("Wielkosc pliku w bajtach: %d\n", length);   // Komunikat testowy
+#endif
     fseek(in, 0, SEEK_SET);     // Ustaw wskaźnik z powrotem na początek pliku
 
     c = malloc(BUFFOR_SIZE * sizeof *c);  // Zaalokuj 50 MB pamięci
@@ -41,14 +36,10 @@ int main(int argc, char** argv){
         }
     }
 
-    printf("Liczba odczytanych bajtów: %d\n", read);
+#ifdef DEBUG
+    printf("Liczba odczytanych bajtow: %d\n", read);
     printf("Czestotliwosc wystepowania konkretnych bajtow:\n");
     for(i = 0; i < 256; i++)
         printf("%x - %d\n", i, num[i]);
-
-    free(c);
-    free(num);
-    fclose(in);
-
-    return 0;
+#endif
 }
