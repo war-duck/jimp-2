@@ -53,6 +53,7 @@ int main(int argc, char** argv) {
 
     // Odczytaj treść pliku
     unsigned char byte = fgetc(in);
+    int res = 0;
     while (tracer != file_length) {
         tracer++;
         int rep = 8;
@@ -87,23 +88,37 @@ int main(int argc, char** argv) {
 
             //for (int i = 0; i < 8; i++) {
                 for (int j = 0; j < codes_num; j++) {
-                    unsigned char mask = make_mask(code_lengths[j]);
-                    unsigned char byte_tmp = byte >> (8 -code_lengths[j]);
+                    unsigned char mask = make_mask(res);
+                    unsigned char byte_tmp = byte >> (8 -code_lengths[j] + res);
                     byte_tmp = byte_tmp << (8 - code_lengths[j]);
                     if( (byte_tmp == codes[j]) && (code_lengths[j] <= rep) ){
                         printf("%c", symbols[j]);
-                        byte = (byte << code_lengths[j]) & 0b11111111;
-                        rep -= code_lengths[j];
+
+                        if(symbols[j] == 26)
+                            goto end;
+
+                        byte = (byte << (code_lengths[j] - res)) & mask;
+                        rep -= code_lengths[j] - res;
+                        res -= code_lengths[j];
+                        if(res < 0)
+                            res = 0;
+
                         break;
+                    }
+                    if(j == codes_num - 1){
+                        res = rep;
+                        rep = 0;
                     }
                 }
             //}
 
-
         }
+        byte = (byte<<8) + fgetc(in);
     }
 
 
+
+    end:
 
     free(symbols);
     free(code_lengths);
