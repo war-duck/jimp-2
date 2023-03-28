@@ -1,10 +1,10 @@
-// prosty decompressor służący do testowania 
-// w pliku test.bin zakodowana jest wiadomość
-// "ala ma [EOF]"
-
+// To jest dekompresor, najbrzydszy kod jaki w życiu napisałem ale działa
+// Pliki testowe:
+// test.bin "ALA MA[EOF]" (najprostszy test)
+// test2.bin "ALM M[EOF]" (testowanie odkodowywania bajtów tak, że gdy w jednym bajcie zostanie 2 nieużyte bity, to zostaną uwzględnione dalej)
+// test3.bin "ALA MA MAMA [EOF]" (wiele bajtów)
 #include <stdio.h>
 #include <stdlib.h>
-#include "decompressor.h"
 
 void print_binary(unsigned char c, int length) {
     int i;
@@ -53,52 +53,22 @@ int main(int argc, char** argv) {
 
     // Odczytaj treść pliku
     unsigned char byte = fgetc(in);
-    int res = 0;
+    int res = 0;    // liczba mówiąca, ile bitów zostało z poprzedniego bajtu
     while (tracer != file_length) {
         tracer++;
-        int rep = 8;
-        while (rep > 0) {
-//            for(int j = 0; j < codes_num; j++){
-//
-//                if( (byte>>i) == (codes[j] >> (code_lengths[j] - 1)) ) {
-//                    printf("%c", symbols[i]);
-//                    unsigned char mask = (1 << i) - 1;
-//                    byte = (byte >> (8-i)) & mask;
-//                    break;
-//                }
-
-            // inne podejście
-//            for(int i = 7; i > rep; i--){
-//                for(int j = 0; j < codes_num; j++){
-//                    if( (byte>>i) == (codes[j] >> (code_lengths[j] - 1)) ) {
-//                        printf("%c", symbols[j]);
-////                      unsigned char mask = (1 << i) - 1;
-//                      byte = (byte << (8-i)) & 0b11111111;
-//                      byte = byte << i;
-////                        byte = (byte >> (8-i)) & 0x11111111;
-//                        break;
-//                    }
-//                }
-//                rep++;
-//            }
-//            byte = (byte<<8) + fgetc(in);
-//        }
-
-
-
-            //for (int i = 0; i < 8; i++) {
+        int left = 8;    // liczba mówiąca, ile bitów zostało w aktualnym bajcie
+        while (left > 0) {
                 for (int j = 0; j < codes_num; j++) {
-//                    unsigned char mask = make_mask(res);
-                    unsigned char byte_tmp = byte >> (8 -code_lengths[j] + res);
+                    unsigned char byte_tmp = byte >> (8 - code_lengths[j] + res);   // tymczasowy bajt, który składa się z res poprzednich bitów i 8-code_length[j] nowych bitów
                     byte_tmp = byte_tmp << (8 - code_lengths[j]);
-                    if( (byte_tmp == codes[j]) && (code_lengths[j] <= rep) ){
+                    if( (byte_tmp == codes[j]) && (code_lengths[j] <= left) ){      // jeżeli bajt pasuje bajtowi kodu i jest wystarczająco krótki
                         printf("%c", symbols[j]);
-
-                        if(symbols[j] == 26)
+                        if(symbols[j] == 26)    // Jeżeli znak to [EOF]
                             goto end;
 
+                        // Odpowiednio przesuń bity w bajcie
                         byte = (byte << (code_lengths[j] - res));
-                        rep -= code_lengths[j] - res;
+                        left -= code_lengths[j] - res;
                         res -= code_lengths[j];
                         if(res < 0)
                             res = 0;
@@ -107,12 +77,10 @@ int main(int argc, char** argv) {
                         break;
                     }
                     if(j == codes_num - 1){
-                        res = rep;
-                        rep = 0;
+                        res = left;
+                        left = 0;
                     }
                 }
-            //}
-
         }
         byte = (byte<<8) + fgetc(in);
     }
@@ -120,7 +88,6 @@ int main(int argc, char** argv) {
 
 
     end:
-
     free(symbols);
     free(code_lengths);
     free(codes);
