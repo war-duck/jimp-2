@@ -88,7 +88,7 @@ int main(int argc, char** argv) {
 
             //for (int i = 0; i < 8; i++) {
                 for (int j = 0; j < codes_num; j++) {
-                    unsigned char mask = make_mask(res);
+//                    unsigned char mask = make_mask(res);
                     unsigned char byte_tmp = byte >> (8 -code_lengths[j] + res);
                     byte_tmp = byte_tmp << (8 - code_lengths[j]);
                     if( (byte_tmp == codes[j]) && (code_lengths[j] <= rep) ){
@@ -97,12 +97,13 @@ int main(int argc, char** argv) {
                         if(symbols[j] == 26)
                             goto end;
 
-                        byte = (byte << (code_lengths[j] - res)) & mask;
+                        byte = (byte << (code_lengths[j] - res));
                         rep -= code_lengths[j] - res;
                         res -= code_lengths[j];
                         if(res < 0)
                             res = 0;
-
+                        unsigned char mask = make_mask(res);
+                        byte = byte  & mask;
                         break;
                     }
                     if(j == codes_num - 1){
