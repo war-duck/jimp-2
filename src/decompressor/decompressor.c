@@ -25,6 +25,7 @@ unsigned char make_mask(int n) {
 int main(int argc, char** argv) {
     printf("%s\n", argv[1]);
     FILE *in = fopen(argv[1], "rb");
+    FILE *out = fopen("output.txt", "w");
     long tracer = 0;    // znacznik, który bajt jest aktualnie czytany
 
     fseek(in, 0, SEEK_END);
@@ -62,7 +63,7 @@ int main(int argc, char** argv) {
                     unsigned char byte_tmp = byte >> (8 - code_lengths[j] + res);   // tymczasowy bajt, który składa się z res poprzednich bitów i 8-code_length[j] nowych bitów
                     byte_tmp = byte_tmp << (8 - code_lengths[j]);
                     if( (byte_tmp == codes[j]) && (code_lengths[j] <= left) ){      // jeżeli bajt pasuje bajtowi kodu i jest wystarczająco krótki
-                        printf("%c", symbols[j]);
+                        fprintf(out, "%c", symbols[j]);
                         if(symbols[j] == 26)    // Jeżeli znak to [EOF]
                             goto end;
 
@@ -88,6 +89,8 @@ int main(int argc, char** argv) {
 
 
     end:
+    fclose(in);
+    fclose(out);
     free(symbols);
     free(code_lengths);
     free(codes);
