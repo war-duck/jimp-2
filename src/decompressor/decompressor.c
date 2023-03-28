@@ -19,6 +19,7 @@ void print_binary(unsigned char c, int length) {
 }
 
 int main(int argc, char** argv){
+    printf("%s\n", argv[1]);
     FILE *in = fopen(argv[1], "rb");
     long tracer = 0;    // znacznik, który bajt jest aktualnie czytany
 
@@ -46,10 +47,34 @@ int main(int argc, char** argv){
     }
 
     // Odczytaj treść pliku
+    unsigned char byte = fgetc(in);
     while(tracer != file_length){
-        char byte = fgetc(in);
         tracer++;
-        // Tutaj będzie kod odpowiedzialny za odkodowanie treści pliku
+        int rep = 0;
+        while(rep < 8){
+//            for(int j = 0; j < codes_num; j++){
+//
+//                if( (byte>>i) == (codes[j] >> (code_lengths[j] - 1)) ) {
+//                    printf("%c", symbols[i]);
+//                    unsigned char mask = (1 << i) - 1;
+//                    byte = (byte >> (8-i)) & mask;
+//                    break;
+//                }
+            for(int i = 7; i > rep; i--){
+                for(int j = 0; j < codes_num; j++){
+                    if( (byte>>i) == (codes[j] >> (code_lengths[j] - 1)) ) {
+                        printf("%c", symbols[j]);
+//                      unsigned char mask = (1 << i) - 1;
+                      byte = (byte << (8-i)) & 0b11111111;
+//                        byte = (byte >> (8-i)) & 0x11111111;
+                        break;
+                    }
+                }
+                rep++;
+            }
+
+            byte = (byte<<8) + fgetc(in);
+        }
     }
 
 
