@@ -19,7 +19,7 @@ void print_binary(unsigned char c, int length) {
 }
 
 unsigned char make_mask(int n) {
-    return (1 << n) - 1;
+    return (1 << (8-n)) - 1;
 }
 
 int main(int argc, char** argv) {
@@ -50,13 +50,13 @@ int main(int argc, char** argv) {
         printf("%c - ", symbols[i]);
         print_binary(codes[i], 8);
     }
-/*
+
     // Odczytaj treść pliku
     unsigned char byte = fgetc(in);
     while (tracer != file_length) {
         tracer++;
-        int rep = 0;
-        while (rep < 8) {
+        int rep = 8;
+        while (rep > 0) {
 //            for(int j = 0; j < codes_num; j++){
 //
 //                if( (byte>>i) == (codes[j] >> (code_lengths[j] - 1)) ) {
@@ -85,16 +85,26 @@ int main(int argc, char** argv) {
 
 
 
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < codes_num; j++) {
-                unsigned char mask = make_mask(code_lengths[j]);
-                if( (byte & mask) == )
-            }
+            //for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < codes_num; j++) {
+                    unsigned char mask = make_mask(code_lengths[j]);
+                    unsigned char byte_tmp = byte >> (8 -code_lengths[j]);
+                    byte_tmp = byte_tmp << (8 - code_lengths[j]);
+                    if( (byte_tmp == codes[j]) && (code_lengths[j] <= rep) ){
+                        printf("%c", symbols[j]);
+                        byte = (byte << code_lengths[j]) & 0b11111111;
+                        rep -= code_lengths[j];
+                        break;
+                    }
+                }
+            //}
+
+
         }
     }
 
 
-*/
+
     free(symbols);
     free(code_lengths);
     free(codes);
