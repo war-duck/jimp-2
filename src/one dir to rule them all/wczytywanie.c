@@ -1,45 +1,31 @@
-// Ten kod poprawnie wczytuje bajty z pliku wejściowego i zapisuje je w wektorze unsigned char* c
+/// Ten kod poprawnie wczytuje bajty z pliku wejściowego i zapisuje je w wektorze unsigned char* c
 // Kod można potem przekopiować (z dorbnymi edycjami) do większego programu
 
-#include <stdio.h>
-#include <stdlib.h>
 #include "wczytywanie.h"
 
-#define BUFFOR_SIZE 52428800 // 50 MB
-#define DEBUG
-void wczytaj(FILE *in, unsigned char *c, unsigned int *num) {
-    int i;
-    long length;        // Długość pliku w bajtach
-    long read = 0;      // Aktualna ilość wczytanych bajtów
+unsigned long wczytaj(FILE* in, struct input_data_info* input){ // zwraca ilość wczytanych bajtów
 
-    fseek(in, 0, SEEK_END);     // Ustaw wskaźnik na koniec pliku
-    length = ftell(in);
-#ifdef DEBUG   
-    printf("Wielkosc pliku w bajtach: %d\n", length);   // Komunikat testowy
+    unsigned long i;
+    unsigned long read = 0;      // Aktualna ilość wczytanych bajtów (w tej iteracji)
+    input->num = calloc(256, sizeof *input->num);
+
+    read = fread(input->data, sizeof(*input->data), input->BUFFER_SIZE, in);
+    if (read == 0)
+        return read;
+#ifdef DEBUG
+    printf ("\nread: %ld\n", read);
+    
+    printf("\nWczytana tresc (tekstowa): %s\n", input->data);
 #endif
-    fseek(in, 0, SEEK_SET);     // Ustaw wskaźnik z powrotem na początek pliku
-
-    c = malloc(BUFFOR_SIZE * sizeof *c);  // Zaalokuj 50 MB pamięci
-    num = calloc(256, sizeof *num);
-
-    // Przeczytaj treść
-    while(read != length){
-        if((length - read) > BUFFOR_SIZE){
-            read += fread(c, sizeof(*c), BUFFOR_SIZE, in);
-            for(i = 0; i < BUFFOR_SIZE; i++)
-                num[c[i]]++;    // Zlicz występowanie znaków
-        }
-        else{
-            read += fread(c, sizeof(*c), (length - read), in);
-            for(i = 0; i < (length - read); i++)
-                num[c[i]]++;    // Zlicz występowanie znaków
-        }
-    }
+    for(i = 0; i < read; i++)
+        input->num[input->data[i]]++;    // Zlicz występowanie znaków
 
 #ifdef DEBUG
-    printf("Liczba odczytanych bajtow: %d\n", read);
-    printf("Czestotliwosc wystepowania konkretnych bajtow:\n");
+    printf("\nCzestotliwosc wystepowania konkretnych bajtow:\n");
     for(i = 0; i < 256; i++)
-        printf("%x - %d\n", i, num[i]);
+        if (input->num[i])
+            printf("%c - %d\n", (char)i, input->num[i]);
 #endif
+    input->length += read;
+    return read;
 }
