@@ -35,8 +35,9 @@ int main(int argc, char** argv){
                 num[c[i]]++;    // Zlicz występowanie znaków
         }
         else{
+            int bytesLeft = length - read;  // liczba bajtów, które zostały (nie zajęły całego buffora)
             read += fread(c, sizeof(*c), (length - read), in);
-            for(i = 0; i < (length - read); i++)
+            for(i = 0; i < bytesLeft; i++)
                 num[c[i]]++;    // Zlicz występowanie znaków
         }
     }
