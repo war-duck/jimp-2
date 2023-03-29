@@ -20,7 +20,7 @@ int main(int argc, char** argv){
         return 1;
 
     fseek(in, 0, SEEK_END);     // Ustaw wskaźnik na koniec pliku
-    length = ftell(in);         
+    length = ftell(in);
     printf("Wielkosc pliku w bajtach: %d\n", length);   // Komunikat testowy
     fseek(in, 0, SEEK_SET);     // Ustaw wskaźnik z powrotem na początek pliku
 
@@ -35,8 +35,9 @@ int main(int argc, char** argv){
                 num[c[i]]++;    // Zlicz występowanie znaków
         }
         else{
+            int bytesLeft = length - read;  // liczba bajtów, które zostały (nie zajęły całego buffora)
             read += fread(c, sizeof(*c), (length - read), in);
-            for(i = 0; i < (length - read); i++)
+            for(i = 0; i < bytesLeft; i++)
                 num[c[i]]++;    // Zlicz występowanie znaków
         }
     }
