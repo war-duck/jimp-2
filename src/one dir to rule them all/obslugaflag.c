@@ -11,7 +11,10 @@ int main(int argc, char **argv) {
     FILE *out = NULL;
     int opcja=0;
 
-    while((opcja = getopt(argc, argv, "i:th"))) {
+    struct input_data_info input;
+    input.BUFFER_SIZE = 50;
+
+    while((opcja = getopt(argc, argv, "i:tb:h"))) {
         switch (opcja) {
         case 'i':
             if(optarg != NULL) {
@@ -19,11 +22,21 @@ int main(int argc, char **argv) {
                 out = fopen(strcat(strtok(optarg, "."), ".cps"), "wb"); //stworzenie pliku wyjsciowego
                 break;
             }
+            else
+                break;
         
         case 't':
             in = stdin;
             out = fopen("out.cps", "wb");
             break;
+
+        case 'b':
+            if(optarg != NULL) {
+                input.BUFFER_SIZE = atoi(optarg);
+                break;
+            }
+            else
+                break;
         
         case 'h':
             printf("Program kompresuje bezstratnie pliki przy pomocy algorytmu Huffmana\n");
@@ -56,13 +69,15 @@ int main(int argc, char **argv) {
             }
 
             //main
-            struct input_data_info input;
-            input.BUFFER_SIZE = 50;
             input.max_data_size = input.BUFFER_SIZE;
             input.data = malloc(input.max_data_size * sizeof(*input.data));
             input.num = calloc(256, sizeof *input.num);
             input.length = 0;
             
+#ifdef DEBUG
+            printf("\nAktualny rozmiar buforu: %ld\n", input.BUFFER_SIZE);
+#endif
+
             while (wczytaj(in, &input)) {
 #ifdef DEBUG
                 printf ("len dotychczas: %ld\n", input.length);
@@ -70,6 +85,10 @@ int main(int argc, char **argv) {
             }
 #ifdef DEBUG
             printf("Wielkosc pliku w bajtach: %ld\n", input.length);   // Komunikat testowy
+            printf("\nCzestotliwosc wystepowania konkretnych bajtow:\n");
+            for(int i = 0; i < 256; i++)
+                if(input.num[i])
+                    printf("%c - %d\n", (char)i, input.num[i]);
 #endif
 
             free(input.data);
