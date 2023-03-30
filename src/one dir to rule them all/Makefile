@@ -8,4 +8,4 @@ cleancps:
 	rm *.cps
 
 clean:
-	rm *.o kompresja kompresjad
+	rm kompresja kompresjad

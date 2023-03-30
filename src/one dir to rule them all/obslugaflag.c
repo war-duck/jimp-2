@@ -42,8 +42,8 @@ int main(int argc, char **argv) {
             printf("Program kompresuje bezstratnie pliki przy pomocy algorytmu Huffmana\n");
             printf("Uzycie:\n");
             printf("-i <plik> - wczytywanie danych z pliku\n");
-            printf("-o <plik> - wypisywanie danych do pliku\n");
             printf("-t <dane> - wczytywanie danych z konsoli\n");
+            printf("-b <rozmiar_buffora> - zdefiniowanie rozmairu buffora (domyslnie=50)\n");
             return 0;
 
         default:
