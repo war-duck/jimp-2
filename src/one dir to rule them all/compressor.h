@@ -3,6 +3,6 @@
 
 #include <stdio.h>
 
-//int compress (FILE* in, FILE* out);
+void compress (FILE* in, FILE* out, unsigned long BUFFER_SIZE);
 
 #endif

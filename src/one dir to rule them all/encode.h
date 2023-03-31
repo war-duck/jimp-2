@@ -18,6 +18,6 @@ typedef struct
 
 void fill_char_code(code_struct* code_info, unsigned char **my_test[2], int dic_len); // przekształca słownik na strukturę, która pozwala szybko wyszukać kod poszczególnych znaków
 
-void compress (unsigned char* uncomp , int len, data_struct* message, code_struct* code_info);
+void encode(unsigned char* uncomp , int len, data_struct* message, code_struct* code_info);
 
 #endif

@@ -16,7 +16,7 @@ void fill_char_code(code_struct* code_info, unsigned char **my_test[2], int dic_
     }
 }
 
-void compress (unsigned char* uncomp , int len, data_struct* message, code_struct* code_info)
+void encode (unsigned char* uncomp , int len, data_struct* message, code_struct* code_info)
 {
     short cur_byte_pos = message->byte_pos; // nr pierwszego wolnego bita.  0 - początek bajta: >0<0111001 - 
     unsigned char* upos = uncomp; // obecnie czytany bajt z pliku wejściowego

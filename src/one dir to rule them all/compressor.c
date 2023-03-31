@@ -5,13 +5,10 @@
 #include "encode.h"
 #include "output.h"
 #include <string.h> // tymczasowo
-//int compress (FILE* in, FILE* out)
-int main()
+void compress (FILE* in, FILE* out, unsigned long BUFFER_SIZE)
 {
-    FILE* in = fopen("test.txt", "rb");
-    FILE* out = fopen("out", "wb");
     struct input_data_info input;
-    input.BUFFER_SIZE = 50;
+    input.BUFFER_SIZE = BUFFER_SIZE;
     input.data = malloc(input.BUFFER_SIZE * sizeof(*input.data));
     input.num = calloc(256, sizeof(*input.num));
     input.length = 0;
@@ -81,8 +78,7 @@ int main()
     // drugi odczyt, kompresja danych i zapis do pliku
     while (read = fread (input.data, sizeof (*input.data), input.BUFFER_SIZE, in))
     {
-        printf ("%s\n", input.data);
-        compress(input.data, read, &message, &code_info);
+        encode(input.data, read, &message, &code_info);
         //print_str_in_bin(message.data, message.len, 0);
         if (message.byte_pos == 0) // jeżeli zakodowana wiadomość zajmuje równą ilość bajtów
         {
@@ -95,7 +91,6 @@ int main()
             *message.data = message.data[message.len-1]; // ostatni staje się pierwszym, będzie wysłany z następną partią danych
             memset (message.data+1, 0, message.max_size-1);
         }
-        fwrite("aaa", sizeof(char), 3, out);
         message.len = 0;
     }
     printf("Wielkosc pliku w bajtach: %d\n", input.length);   // Komunikat testowy
@@ -110,5 +105,4 @@ int main()
     free(input.data);
     fclose(in);
     fclose(out);
-    return 0;
 }
