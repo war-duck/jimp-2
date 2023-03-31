@@ -56,8 +56,8 @@ int main(int argc, char **argv) {
             else {
                 printf("Przyjalem plik wyjsciowy.\n");
             }
-
-            //compressor()            
+            //tutaj bedzie wywolywana funkcja glowna programu w formacie np. funkcja(plik we/stdin, plik wy)
+            
             return 0;
         }
     }

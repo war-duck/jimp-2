@@ -1,5 +1,5 @@
-#ifndef COMPRESS_H
-#define COMPRESS_H
+#ifndef ENCODE_H
+#define ENCODE_H
 
 typedef struct
 {
@@ -15,5 +15,9 @@ typedef struct
     short byte_pos; // jeżeli == 0, to cały ostatni bajt (data[len-1]) jest zajęty.
                     // jeżeli != 0, to część bajtu data[len-1] jest zajęta, należy przejść do kolejnego bitu
 } data_struct; // przechowuje zakodowaną treść pliku wejściowego
+
+void fill_char_code(code_struct* code_info, unsigned char **my_test[2], int dic_len); // przekształca słownik na strukturę, która pozwala szybko wyszukać kod poszczególnych znaków
+
+void compress (unsigned char* uncomp , int len, data_struct* message, code_struct* code_info);
 
 #endif
