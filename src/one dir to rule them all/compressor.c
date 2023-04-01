@@ -17,11 +17,12 @@ void compress (FILE* in, FILE* out, unsigned long BUFFER_SIZE)
     while (read = fread (input.data, sizeof (*input.data), input.BUFFER_SIZE, in))
     {
         input.length += read;
-        printf ("%s\n%d", input.data, read);
+        printf ("%s\n", input.data);
         for(int i = 0; i < read; i++)
             input.num[input.data[i]]++;    // Zlicz występowanie znaków
     }
     fseek(in, 0, SEEK_SET); // powrót na początek pliku
+    fwrite("\0", sizeof(char), 1, out); // zostawienie wolnego miejsca na wpisanie liczby wolnych bajtów
     int code_num = 0; // ile różnych bajtów jest w pliku
     for (int i = 0; i < 256; ++i)
         if (input.num[i])
@@ -93,7 +94,12 @@ void compress (FILE* in, FILE* out, unsigned long BUFFER_SIZE)
         }
         message.len = 0;
     }
-    printf("Wielkosc pliku w bajtach: %d\n", input.length);   // Komunikat testowy
+    if (message.byte_pos != 0) // trzeba dopisać ostatni, niedopełniony, bajt, bo został pominięty w pętli
+        fwrite(message.data, sizeof(char), 1, out);
+    fseek(out, 0, SEEK_SET); // na początku pliku wyjściowego wpisujemy liczbę niezapełnionych bitów w ostatnim bajcie
+    char tmp = (char)message.byte_pos;
+    fwrite(&tmp, sizeof(char), 1, out);
+    //printf("Wielkosc pliku w bajtach: %d\n", input.length);   // Komunikat testowy
     for (int i = 0; i < code_num; ++i)
     {
         free (dict[0][i]);
