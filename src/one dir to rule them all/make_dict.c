@@ -8,7 +8,7 @@
 #include <string.h>
 
 // Funkcja przechodzi rekurencyjnie po drzewie celem stworzenia kodów
-static void traverse(treeNode *root, stack_t* stack, char*** dict, int* index){
+static void traverse(treeNode *root, stack_t* stack, unsigned char*** dict, int* index){
     if(root->left != NULL){
         put(stack, '0');
         traverse(root->left, stack, dict, index);
@@ -26,7 +26,7 @@ static void traverse(treeNode *root, stack_t* stack, char*** dict, int* index){
 }
 
 // Funkcja inicjująca
-char*** make_dict(treeNode *root, int code_num){
+unsigned char*** make_dict(treeNode *root, int code_num){
     int index = 0;  // Licznik kodów
     // Utwórz słownik
     char *** dict = malloc(2 * sizeof(char**));

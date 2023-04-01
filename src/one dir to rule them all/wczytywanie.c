@@ -21,5 +21,4 @@ unsigned long wczytaj(FILE* in, struct input_data_info* input){ // zwraca iloÅ›Ä
 
 void licz (struct input_data_info* input, unsigned long length)
 {
-    
 }
