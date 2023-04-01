@@ -3,7 +3,7 @@
 
 #include "tree.h"
 
-char*** make_dict(treeNode*, int);
+unsigned char*** make_dict(treeNode*, int);
 void free_dict(char***, int);
 
 #endif

@@ -4,6 +4,7 @@
 #include "queue.h"
 #include "encode.h"
 #include "output.h"
+#include "make_dict.h"
 #include <string.h> // tymczasowo
 void compress (FILE* in, FILE* out, unsigned long BUFFER_SIZE)
 {
@@ -23,37 +24,19 @@ void compress (FILE* in, FILE* out, unsigned long BUFFER_SIZE)
     }
     fseek(in, 0, SEEK_SET); // powrót na początek pliku
     int code_num = 0; // ile różnych bajtów jest w pliku
+
+    queue *q = initQue();
     for (int i = 0; i < 256; ++i)
-        if (input.num[i])
+        if (input.num[i]) {
             ++code_num;
-    //
-    // tworzenie kolejki, drzewa
-    // ja tego nie ogarniam, utworzę przypadkowe kody
-    // tmp
-    //
-    unsigned char** dict[2];
-    dict[0] = calloc (code_num,  sizeof (char*));
-    dict[1] = calloc (code_num,  sizeof (char*));
-    int j = 0;
-    for (int i = 0; i < 256; ++i)
-    {
-        if (input.num[i])
-        {
-            dict[0][j] = calloc (2, sizeof(char));
-            dict[1][j] = calloc (j+3, sizeof (char));
-            dict[0][j][0] = i;
-            dict[1][j][0] = '1';
-            memset (dict[1][j]+1, 48, j+1);
-            ++j;
+            addToQue(q, makeTreeNode(i,input.num[i]));
         }
-    }
-    printf ("tymczasowy slownik:\n");
-    for (int i = 0; i < code_num; ++i)
-        printf ("%s, %d, %s\n", dict[0][i], i+2, dict[1][i]);
-    //
-    // koniec tmp
-    // chodzi o to, żeby na tutaj na wyjściu była zmienna unsigned char** dict[2] z gotowym słownikiem
-    //
+
+    treeNode *root = makeTree(q);
+    unsigned char*** dict = make_dict(root, code_num);
+
+    // TO-DO sprawdzić, czy pamięć jest zwalniana
+
     data_struct message = 
     {
         .data = calloc(input.BUFFER_SIZE, sizeof(char)),
