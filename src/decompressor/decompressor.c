@@ -3,6 +3,9 @@
 // test.bin "ALA MA[EOF]" (najprostszy test)
 // test2.bin "ALM M[EOF]" (testowanie odkodowywania bajtów tak, że gdy w jednym bajcie zostanie 2 nieużyte bity, to zostaną uwzględnione dalej)
 // test3.bin "ALA MA MAMA [EOF]" (wiele bajtów)
+
+// UWAGA nie testowałem odczytywania kodów, które są dłuższe niż 8 bajtów.
+
 #include <stdio.h>
 #include <stdlib.h>
 
