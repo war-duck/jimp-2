@@ -41,7 +41,7 @@ char pop(stack_t* stack){
 }
 
 // Dopisuje kod do słownika
-void get_code(stack_t *stack, char** dict[2], int index){
+void get_code(stack_t *stack, unsigned char*** dict, int index){
     dict[1][index] = malloc((stack->index + 1) * sizeof *dict[1][index]);
     for(int i = 0; i < stack->index; i++){
         dict[1][index][i] = stack->vec[i];

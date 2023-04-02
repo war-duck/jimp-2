@@ -12,7 +12,7 @@ typedef struct{
 stack_t *initialize_stack();
 void put(stack_t*, char);
 char pop(stack_t*);
-void get_code(stack_t*, char** dict[2], int);
+void get_code(stack_t*,unsigned char***, int);
 void free_stack(stack_t*);
 
 #endif

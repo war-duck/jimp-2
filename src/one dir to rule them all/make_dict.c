@@ -31,7 +31,7 @@ static void traverse(treeNode *root, stack_t* stack, unsigned char*** dict, int*
 unsigned char*** make_dict(treeNode *root, int code_num){
     int index = 0;  // Licznik kodów
     // Utwórz słownik
-    char *** dict = malloc(2 * sizeof(char**));
+    unsigned char*** dict = malloc(2 * sizeof(char**));
     dict[0] = malloc(code_num * sizeof(char*));
     dict[1] = malloc(code_num * sizeof(char*));
 
