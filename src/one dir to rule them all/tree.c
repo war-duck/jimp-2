@@ -18,7 +18,7 @@ treeNode *makeTreeNode(unsigned char c, int num){
 }
 
 // Funkcja dopisuje znak do słownika
-void get_char(treeNode *tree, char** dict[2], int index){
+void get_char(treeNode *tree, unsigned char*** dict, int index){
     dict[0][index] = malloc(2 * sizeof(char));
     dict[0][index][0] = tree->c;
     dict[0][index][1] = '\0';
@@ -94,3 +94,10 @@ void printTree(treeNode *root){
     printTreeRec(root, 0);
 }
 
+void freeTree(treeNode *root){
+    if(root != NULL){
+        freeTree(root->left);
+        freeTree(root->right);
+        free(root);
+    }
+}

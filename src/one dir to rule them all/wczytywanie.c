@@ -1,55 +1,24 @@
 // Ten kod poprawnie wczytuje bajty z pliku wejściowego i zapisuje je w wektorze unsigned char* c
 // Kod można potem przekopiować (z dorbnymi edycjami) do większego programu
 
-#include <stdio.h>
-#include <stdlib.h>
+#include "wczytywanie.h"
 
-#define BUFFOR_SIZE 52428800 // 50 MB
+unsigned long wczytaj(FILE* in, struct input_data_info* input){ // zwraca ilość wczytanych bajtów
 
-int main(int argc, char** argv){
+    unsigned long i;
+    unsigned long read;      // Aktualna ilość wczytanych bajtów (w tej iteracji)
 
-    int i;
-    unsigned char *c;
-    unsigned int *num;  // Liczba występowania poszczególnych bajtów
-    long length;        // Długość pliku w bajtach
-    long read = 0;      // Aktualna ilość wczytanych bajtów
+    read = fread(input->data, sizeof(*input->data), input->BUFFER_SIZE, in);
 
-    // Otwieranie pliku wejściowego
-    FILE *in = fopen(argv[1], "rb");
-    if (in == NULL)
-        return 1;
+    //printf("Wczytana tresc (tekstowa): %s\n", input->data);
+    
 
-    fseek(in, 0, SEEK_END);     // Ustaw wskaźnik na koniec pliku
-    length = ftell(in);
-    printf("Wielkosc pliku w bajtach: %d\n", length);   // Komunikat testowy
-    fseek(in, 0, SEEK_SET);     // Ustaw wskaźnik z powrotem na początek pliku
 
-    c = malloc(BUFFOR_SIZE * sizeof *c);  // Zaalokuj 50 MB pamięci
-    num = calloc(256, sizeof *num);
 
-    // Przeczytaj treść
-    while(read != length){
-        if((length - read) > BUFFOR_SIZE){
-            read += fread(c, sizeof(*c), BUFFOR_SIZE, in);
-            for(i = 0; i < BUFFOR_SIZE; i++)
-                num[c[i]]++;    // Zlicz występowanie znaków
-        }
-        else{
-            int bytesLeft = length - read;  // liczba bajtów, które zostały (nie zajęły całego buffora)
-            read += fread(c, sizeof(*c), (length - read), in);
-            for(i = 0; i < bytesLeft; i++)
-                num[c[i]]++;    // Zlicz występowanie znaków
-        }
-    }
+    input->length += read;
+    return read;
+}
 
-    printf("Liczba odczytanych bajtów: %d\n", read);
-    printf("Czestotliwosc wystepowania konkretnych bajtow:\n");
-    for(i = 0; i < 256; i++)
-        printf("%x - %d\n", i, num[i]);
-
-    free(c);
-    free(num);
-    fclose(in);
-
-    return 0;
+void licz (struct input_data_info* input, unsigned long length)
+{
 }

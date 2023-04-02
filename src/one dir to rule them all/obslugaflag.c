@@ -3,37 +3,47 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <getopt.h>
+#include <string.h>
+#include "compressor.h"
 
 int main(int argc, char **argv) {
     FILE *in = NULL;
     FILE *out = NULL;
     int opcja=0;
 
-    while((opcja = getopt(argc, argv, "i:o:th"))) {
+    unsigned long BUFFER_SIZE = 50;
+
+    while((opcja = getopt(argc, argv, "i:tb:h"))) {
         switch (opcja) {
         case 'i':
             if(optarg != NULL) {
-                in = fopen(optarg, "r");
+                in = fopen(optarg, "rb");
+                out = fopen(strcat(strtok(optarg, "."), ".cps"), "wb"); //stworzenie pliku wyjsciowego
                 break;
             }
-        
-        case 'o':
-            if(optarg != NULL) {
-                out = fopen(optarg, "w"); //jezeli plik nie istnieje to go tworzy
+            else
                 break;
-            }
         
         case 't':
             in = stdin;
+            out = fopen("out.cps", "wb");
             break;
 
+        case 'b':
+            if(optarg != NULL) {
+                BUFFER_SIZE = atoi(optarg);
+                break;
+            }
+            else
+                break;
+        
         case 'h':
             printf("Program kompresuje bezstratnie pliki przy pomocy algorytmu Huffmana\n");
             printf("Uzycie:\n");
             printf("-i <plik> - wczytywanie danych z pliku\n");
-            printf("-o <plik> - wypisywanie danych do pliku\n");
             printf("-t <dane> - wczytywanie danych z konsoli\n");
-            break;
+            printf("-b <rozmiar_buffora> - zdefiniowanie rozmairu buffora (domyslnie=50)\n");
+            return 0;
 
         default:
             //sprawdzenie wejscia
@@ -45,20 +55,19 @@ int main(int argc, char **argv) {
                 printf("Wczytywanie z konsoli.\n");
             }
             else {
-                printf("Przyjalem plik wejsciowy\n");
+                printf("Przyjeto plik wejsciowy\n");
             }
 
             //sprawdzenie wyjscia
             if( out == NULL) {
-                printf("Niewlasciwy format pliku wyjsciowego.\n");
+                printf("Nie mozna utworzyc pliku wyjsciowego.\n");
                 return 4;
             }
             else {
-                printf("Przyjalem plik wyjsciowy.\n");
+                printf("Utworzono plik wyjsciowy.\n");
             }
 
-            //tutaj bedzie wywolywana funkcja glowna programu w formacie np. funkcja(plik we/stdin, plik wy)
-            
+            compress (in, out, BUFFER_SIZE);
             return 0;
         }
     }
