@@ -8,5 +8,3 @@ struct input_data_info
     unsigned long length;        // Długość pliku w bajtach. wsm nie jest nigdzie potrzebna, ale można przechować
     unsigned long BUFFER_SIZE;
 };
-
-unsigned long wczytaj(FILE* in, struct input_data_info* input);

@@ -21,7 +21,6 @@ typedef struct queue{      // Struktura "kolejki" - ma wskaźniki na początek i
 
 queue *initQue();
 void addToQue(queue*, struct treeNode *tree);
-int isEmpty();
 void moveQueue(queue*);
 
 #endif

@@ -2,8 +2,6 @@
 
 #include "stack.h"
 #include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
 
 // Zwraca zainicjowany stos
 stack_t *initialize_stack(){
@@ -12,7 +10,8 @@ stack_t *initialize_stack(){
         return NULL;
     stack->index = 0;
     stack->size = 16;
-    stack->vec = malloc(stack->size * sizeof *stack->vec);    
+    stack->vec = malloc(stack->size * sizeof *stack->vec);
+    return stack;
 }
 
 // Powiększa wielkość stosu o 16
@@ -32,7 +31,6 @@ void put(stack_t* stack, char c){
 // Zwraca element na górze stosu
 char pop(stack_t* stack){
     if(stack->index == 0){
-        //fprintf(stderr, "Error: stack is empty.\n");
         return -1;
     }
     int tmp = stack->vec[stack->index];

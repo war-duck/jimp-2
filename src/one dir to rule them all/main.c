@@ -1,4 +1,4 @@
-//Ten kod odpowiada za obsługę flag za pomocą getopta
+// Program główny
 
 #include <stdio.h>
 #include <stdlib.h>

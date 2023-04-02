@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "output.h"
+
 void print_str_in_bin(unsigned char* str, int len, int add_char) // len w bajtach, add_char - 1 - podpisuj poszczególne bajty odp. znakami, 0 - nie
 {
     unsigned char c;
@@ -61,33 +62,3 @@ unsigned char* dic_to_bin(unsigned char** dic[2], int num, int* len) // tablica[
     *len = pos - output;
     return output;
 }
-
-// void test()
-// {
-//     int num = 6;
-//     char **my_test[2];
-//     my_test[0] = malloc(num * sizeof(char*));
-//     my_test[1] = malloc(num * sizeof(char*));
-//     my_test[0][0] = "a";
-//     my_test[0][1] = "b";
-//     my_test[0][2] = "c";
-//     my_test[0][3] = "d";
-//     my_test[0][4] = "e";
-//     my_test[0][5] = "f";
-//     my_test[1][0] = "101";
-//     my_test[1][1] = "101101000";
-//     my_test[1][2] = "1";
-//     my_test[1][3] = "100111001000110001";
-//     my_test[1][4] = "1011010010";
-//     my_test[1][5] = "1010101010101010101010101010101";
-//     char* result = dic_to_bin(my_test, num);
-//     printf ("\n\n%s", result);
-//     FILE *out = fopen("test", "wb");
-//     if (out == NULL)
-//         return;
-//     output_to_file(out, result, strlen(result));
-//     fclose(out);
-//     free(result);
-//     free(my_test[0]);
-//     free(my_test[1]);
-// }

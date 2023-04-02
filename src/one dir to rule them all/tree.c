@@ -24,7 +24,7 @@ void get_char(treeNode *tree, unsigned char*** dict, int index){
     dict[0][index][1] = '\0';
 }
 
-// łączy 2 węzły drzewa w jeden
+// Łączy 2 węzły drzewa w jeden
 treeNode *joinNodes(treeNode *first, treeNode *second){
     treeNode *newNode = malloc(sizeof *newNode);
     if(newNode == NULL)
@@ -45,6 +45,7 @@ static void printTabs(int level){
         printf("\t");
 }
 
+// Tworzy pełne drzewo w oparciu o kolejkę
 treeNode *makeTree(struct queue *q){
 
     treeNode *lowestPrior1 = NULL;
@@ -94,6 +95,7 @@ void printTree(treeNode *root){
     printTreeRec(root, 0);
 }
 
+// Zwalnia pamięć
 void freeTree(treeNode *root){
     if(root != NULL){
         freeTree(root->left);
