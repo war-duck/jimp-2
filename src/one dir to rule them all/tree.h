@@ -15,10 +15,11 @@ typedef struct treeNode{
     struct treeNode *right;
 } treeNode;
 
-void get_char(treeNode*, char** dict[2], int);
+void get_char(treeNode*, unsigned char*** dict, int);
 treeNode *makeTreeNode(unsigned char, int);
 treeNode *joinNodes(treeNode*, treeNode*);
 treeNode *makeTree(struct queue* q);
 void printTree(treeNode*);
+void freeTree(treeNode*);
 
 #endif

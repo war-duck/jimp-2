@@ -4,6 +4,6 @@
 #include "tree.h"
 
 unsigned char*** make_dict(treeNode*, int);
-void free_dict(char***, int);
+void free_dict(unsigned char***, int);
 
 #endif

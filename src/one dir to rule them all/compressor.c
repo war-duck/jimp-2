@@ -18,9 +18,10 @@ void compress (FILE* in, FILE* out, unsigned long BUFFER_SIZE)
     while (read = fread (input.data, sizeof (*input.data), input.BUFFER_SIZE, in))
     {
         input.length += read;
-        printf ("%s\n", input.data);
-        for(int i = 0; i < read; i++)
+        for(int i = 0; i < read; i++) {
             input.num[input.data[i]]++;    // Zlicz występowanie znaków
+            printf("%c", input.data[i]);
+        }
     }
     fseek(in, 0, SEEK_SET); // powrót na początek pliku
     fwrite("\0", sizeof(char), 1, out); // zostawienie wolnego miejsca na wpisanie liczby wolnych bajtów
@@ -33,10 +34,10 @@ void compress (FILE* in, FILE* out, unsigned long BUFFER_SIZE)
             addToQue(q, makeTreeNode(i,input.num[i]));
         }
 
+    // Tworzenie drzewa binarnego i słownika
     treeNode *root = makeTree(q);
+//    printTree(root);
     unsigned char*** dict = make_dict(root, code_num);
-
-    // TO-DO sprawdzić, czy pamięć jest zwalniana
 
     data_struct message = 
     {
@@ -47,15 +48,15 @@ void compress (FILE* in, FILE* out, unsigned long BUFFER_SIZE)
     };
     code_struct code_info = {.char_code = {0}, .code_len = {0}};
     fill_char_code(&code_info, dict, code_num); // konwertuje słownik na strukturę
-    // for (int i = 0; i < 256; i++) // sprawdzenie poprawności zakodowania binarnego słownika
-    // {
-    //     if (code_info.code_len[i])
-    //     {
-    //         printf ("%c len: %d\n", (char)i, code_info.code_len[i]);
+     for (int i = 0; i < 256; i++) // sprawdzenie poprawności zakodowania binarnego słownika
+     {
+         if (code_info.code_len[i])
+         {
+             printf ("%c len: %d\n", (char)i, code_info.code_len[i]);
 
-    //         print_str_in_bin(code_info.char_code[i], 1+(code_info.code_len[i]-1)/8, 0);
-    //     }
-    // }
+             print_str_in_bin(code_info.char_code[i], 1+(code_info.code_len[i]-1)/8, 0);
+         }
+     }
     int compressed_dic_len; // kompresja i zapis do pliku słownika
     unsigned char* compressed_dic = dic_to_bin(dict, code_num, &compressed_dic_len);
     fwrite(compressed_dic, sizeof(char), compressed_dic_len, out); // dodajemy do pliku wyjściowego słownik
@@ -83,13 +84,9 @@ void compress (FILE* in, FILE* out, unsigned long BUFFER_SIZE)
     char tmp = (char)message.byte_pos;
     fwrite(&tmp, sizeof(char), 1, out);
     //printf("Wielkosc pliku w bajtach: %d\n", input.length);   // Komunikat testowy
-    for (int i = 0; i < code_num; ++i)
-    {
-        free (dict[0][i]);
-        free (dict[1][i]);
-    }
-    free (dict[0]);
-    free (dict[1]);
+
+    free_dict(dict, code_num);
+    freeTree(root);
     free(input.num);
     free(input.data);
     fclose(in);
