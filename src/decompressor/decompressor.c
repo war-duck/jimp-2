@@ -5,9 +5,10 @@
 // test3.bin "ALA MA MAMA [EOF]" (wiele bajtów)
 
 // UWAGA nie testowałem odczytywania kodów, które są dłuższe niż 8 bajtów.
-
+// + zmieniła się struktura pliku .cps , pierwszy bajt teraz mówi ile jest bitów wolnych
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 void print_binary(unsigned char c, int length) {
     int i;
@@ -18,17 +19,24 @@ void print_binary(unsigned char c, int length) {
             printf("0");
         }
     }
-    printf("\n");
 }
 
 unsigned char make_mask(int n) {
     return (1 << (8-n)) - 1;
 }
 
+char* changeExtension(char* filename){
+    int len = strlen(filename);
+    filename[len - 3] = 't';
+    filename[len - 2] = 'x';
+    filename[len - 1] = 't';
+    return filename;
+}
+
 int main(int argc, char** argv) {
     printf("%s\n", argv[1]);
     FILE *in = fopen(argv[1], "rb");
-    FILE *out = fopen("output.txt", "w");
+    FILE *out = fopen(changeExtension(argv[1]), "w");
     long tracer = 0;    // znacznik, który bajt jest aktualnie czytany
 
     fseek(in, 0, SEEK_END);
@@ -53,6 +61,7 @@ int main(int argc, char** argv) {
         tracer += 3;
         printf("%c - ", symbols[i]);
         print_binary(codes[i], 8);
+        printf(" len: %d\n", code_lengths[i]);
     }
 
     // Odczytaj treść pliku
