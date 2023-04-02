@@ -24,7 +24,7 @@ void compress (FILE* in, FILE* out, unsigned long BUFFER_SIZE)
         }
     }
     fseek(in, 0, SEEK_SET); // powrót na początek pliku
-    fwrite("\0", sizeof(char), 1, out); // zostawienie wolnego miejsca na wpisanie liczby wolnych bajtów
+    fwrite("\0\0", sizeof(char), 2, out); // zostawienie wolnego miejsca na wpisanie liczby wolnych bajtów i długości słownika
     int code_num = 0; // ile różnych bajtów jest w pliku
 
     queue *q = initQue();
@@ -81,8 +81,10 @@ void compress (FILE* in, FILE* out, unsigned long BUFFER_SIZE)
     if (message.byte_pos != 0) // trzeba dopisać ostatni, niedopełniony, bajt, bo został pominięty w pętli
         fwrite(message.data, sizeof(char), 1, out);
     fseek(out, 0, SEEK_SET); // na początku pliku wyjściowego wpisujemy liczbę niezapełnionych bitów w ostatnim bajcie
-    char tmp = (char)message.byte_pos;
-    fwrite(&tmp, sizeof(char), 1, out);
+    char tmp[2];
+    tmp[0] = (char)message.byte_pos;
+    tmp[1] = (char)(code_num == 256 ? 0 : code_num); // jeżeli jest 256 wpisów w słowniku to wpisujemy tutaj 0. Trzeba to wziąć pod uwagę przy dekompresji
+    fwrite(tmp, sizeof(char), 2, out);
     //printf("Wielkosc pliku w bajtach: %d\n", input.length);   // Komunikat testowy
 
     free_dict(dict, code_num);
