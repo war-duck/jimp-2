@@ -112,7 +112,8 @@ int main(int argc, char** argv) {
                     move = codeByte * 8 - code_lengths[j];
                     byte_tmp = byte_tmp << move;
                     if( (byte_tmp == codes[j]) && (code_lengths[j] <= left + res) ){      // jeżeli bajt pasuje bajtowi kodu i jest wystarczająco krótki
-                        fprintf(out, "%c", symbols[j]);
+                        if(symbols[j] != 13)    // pomiń znak "carriage return"
+                            fprintf(out, "%c", symbols[j]);
 
                         // Odpowiednio przesuń bity w bajcie
                         byte = (byte << (code_lengths[j] - res));
