@@ -20,7 +20,7 @@ void compress (FILE* in, FILE* out, unsigned long BUFFER_SIZE)
         input.length += read;
         for(int i = 0; i < read; i++) {
             input.num[input.data[i]]++;    // Zlicz występowanie znaków
-            printf("%c", input.data[i]);
+            //printf("%c", input.data[i]);
         }
     }
     fseek(in, 0, SEEK_SET); // powrót na początek pliku
@@ -52,9 +52,9 @@ void compress (FILE* in, FILE* out, unsigned long BUFFER_SIZE)
      {
          if (code_info.code_len[i])
          {
-             printf ("%c len: %d\n", (char)i, code_info.code_len[i]);
+            //  printf ("%c len: %d\n", (char)i, code_info.code_len[i]);
 
-             print_str_in_bin(code_info.char_code[i], 1+(code_info.code_len[i]-1)/8, 0);
+            //  print_str_in_bin(code_info.char_code[i], 1+(code_info.code_len[i]-1)/8, 0);
          }
      }
     int compressed_dic_len; // kompresja i zapis do pliku słownika
@@ -63,6 +63,7 @@ void compress (FILE* in, FILE* out, unsigned long BUFFER_SIZE)
     // drugi odczyt, kompresja danych i zapis do pliku
     while (read = fread (input.data, sizeof (*input.data), input.BUFFER_SIZE, in))
     {
+        printf ("iter  read: %d\n", read);
         encode(input.data, read, &message, &code_info);
         //print_str_in_bin(message.data, message.len, 0);
         if (message.byte_pos == 0) // jeżeli zakodowana wiadomość zajmuje równą ilość bajtów
