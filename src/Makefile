@@ -31,7 +31,7 @@ test4:
 	@cp tests/test4_v1.txt tests/test4.txt
 	@./kompresja -i tests/test4.txt
 	@./dekompresja tests/test4.cps
-	@echo "Roznice miedzy plikami przed kompresja i po komresji:"
+	@echo "Roznice miedzy plikami przed kompresja i po dekompresji:"
 	@diff tests/test4.txt tests/test4_v1.txt
 	@echo
 	@make clean
