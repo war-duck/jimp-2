@@ -22,8 +22,8 @@ void print_binary(long long int c, int length) {
     }
 }
 
-unsigned char make_mask(int n) {
-    return (1 << (8-n)) - 1;
+long long int make_mask(int n, int byteNum) {
+    return (1 << (8-n*byteNum)) - 1;
 }
 
 char* changeExtension(char* filename){
@@ -83,15 +83,35 @@ int main(int argc, char** argv) {
 
     // Odczytaj treść pliku
     long long int byte = fgetc(in);
+    int byteNum = 1;
     int res = 0;    // liczba mówiąca, ile bitów zostało z poprzedniego bajtu
     while (tracer != file_length) {
         tracer++;
         int left = 8;    // liczba mówiąca, ile bitów zostało w aktualnym bajcie
         while (left > 0) {
                 for (int j = 0; j < codes_num; j++) {
-                    unsigned char byte_tmp = byte >> (8 - code_lengths[j] + res);   // tymczasowy bajt, który składa się z res poprzednich bitów i 8-code_length[j] nowych bitów
-                    byte_tmp = byte_tmp << (8 - code_lengths[j]);
-                    if( (byte_tmp == codes[j]) && (code_lengths[j] <= left) ){      // jeżeli bajt pasuje bajtowi kodu i jest wystarczająco krótki
+                    // zamiast 8 musi być wyrażenie aryt.
+//                    int move = code_lengths[j] + res;
+// bug jest w zmiennej res
+//                    int move = 8 + res - code_lengths[j]; // to jakoś działa
+//                    int move = (code_lengths[j] % 8 == 0) ? 0 : (((code_lengths[j] / 8) + 1)*8 - code_lengths[j] + res);
+                    int move = byteNum*8 - code_lengths[j] + res;
+                    long long byte_tmp = byte >> move;
+//                    move = code_lengths[j] % 8 == 0 ? ((code_lengths[j]/8)*8 - code_lengths[j] + res) : ((code_lengths[j]/8)*8+8 - code_lengths[j] + res);
+//                    move = res + left - code_lengths[j];
+//                    move = (code_lengths[j] / 8)*8;
+//                    move += code_lengths[j] % 8;
+//                    if(code_lengths[j] % 8 == 0)
+//                        move = byteNum*8 - code_lengths[j];
+//                    else
+//                        move = byteNum*8 - ((code_lengths[j] / 8 )*8 + code_lengths[j]%8);
+
+//                    long long int byte_tmp = byte >> (8 - code_lengths[j] + res);   // tymczasowy bajt, który składa się z res poprzednich bitów i 8-code_length[j] nowych bitów
+//                    byte_tmp = byte_tmp << (8 - code_lengths[j] + res);
+                    int codeByte = code_lengths[j] % 8 == 0 ? code_lengths[j]/8 : (code_lengths[j]/8 + 1);
+                    move = codeByte * 8 - code_lengths[j];
+                    byte_tmp = byte_tmp << move;
+                    if( (byte_tmp == codes[j]) && (code_lengths[j] <= left + res) ){      // jeżeli bajt pasuje bajtowi kodu i jest wystarczająco krótki
                         fprintf(out, "%c", symbols[j]);
                         if(symbols[j] == 26)    // Jeżeli znak to [EOF]
                             goto end;
@@ -102,7 +122,8 @@ int main(int argc, char** argv) {
                         res -= code_lengths[j];
                         if(res < 0)
                             res = 0;
-                        unsigned char mask = make_mask(res);
+                        byteNum = res / 8 + 1;
+                        long long int mask = make_mask(res, byteNum);
                         byte = byte  & mask;
                         break;
                     }
@@ -112,7 +133,8 @@ int main(int argc, char** argv) {
                     }
                 }
         }
-        byte = (byte<<8) | fgetc(in);
+        byte = (byte<<res) | fgetc(in);
+
     }
 
 
