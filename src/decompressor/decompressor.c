@@ -125,14 +125,19 @@ int main(int argc, char** argv) {
                         byteNum = res / 8 + 1;
                         long long int mask = make_mask(res, byteNum);
                         byte = byte  & mask;
+                        if(tracer == file_length && left == freeBits)
+                            goto end;
                         break;
                     }
                     if(j == codes_num - 1){
+                        if(tracer == file_length && left == freeBits)
+                            goto end;
                         res = left;
                         left = 0;
                     }
                 }
         }
+
         byte = (byte<<res) | fgetc(in);
 
     }
