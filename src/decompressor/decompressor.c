@@ -4,15 +4,16 @@
 // test2.bin "ALM M[EOF]" (testowanie odkodowywania bajtów tak, że gdy w jednym bajcie zostanie 2 nieużyte bity, to zostaną uwzględnione dalej)
 // test3.bin "ALA MA MAMA [EOF]" (wiele bajtów)
 
-// UWAGA nie testowałem odczytywania kodów, które są dłuższe niż 8 bajtów.
-// + zmieniła się struktura pliku .cps , pierwszy bajt teraz mówi ile jest bitów wolnych
+// UWAGA nie działa odokodowanie dla kodów dłóższych niż 8 (jeden bajt)
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 void print_binary(long long int c, int length) {
     int i;
-    for (i = length - 1; i >= 0; i--) {
+    int start = (length % 8 == 0) ? length : ((length / 8) * 8 + 8);
+//    int end = (length % 8 == 0) ?
+    for (i = start - 1; i >= (start - length) ; i--) {
         if (c & (1 << i)) {
             printf("1");
         } else {
@@ -73,13 +74,15 @@ int main(int argc, char** argv) {
 //            codes[i] = codes[i] << move;
             tracer++;
         }
+        int move = ((code_lengths[i] % 8 == 0) ? 0 : (8 - (code_lengths[i] % 8)));
+        codes[i] = codes[i] << move;
         printf("%c - ", symbols[i]);
         print_binary(codes[i], code_lengths[i]);
         printf("\n");
     }
 
     // Odczytaj treść pliku
-    unsigned char byte = fgetc(in);
+    long long int byte = fgetc(in);
     int res = 0;    // liczba mówiąca, ile bitów zostało z poprzedniego bajtu
     while (tracer != file_length) {
         tracer++;
@@ -109,7 +112,7 @@ int main(int argc, char** argv) {
                     }
                 }
         }
-        byte = (byte<<8) + fgetc(in);
+        byte = (byte<<8) | fgetc(in);
     }
 
 
