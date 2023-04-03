@@ -20,8 +20,10 @@ void compress (FILE* in, FILE* out, unsigned long BUFFER_SIZE)
         input.length += read;
         for(int i = 0; i < read; i++) {
             input.num[input.data[i]]++;    // Zlicz występowanie znaków
-            printf("%c", input.data[i]);
         }
+#ifdef DEBUG
+        printf("\nWczytana tresc: %s\n", input.data);
+#endif
     }
     fseek(in, 0, SEEK_SET); // powrót na początek pliku
     fwrite("\0\0", sizeof(char), 2, out); // zostawienie wolnego miejsca na wpisanie liczby wolnych bajtów i długości słownika
@@ -36,7 +38,9 @@ void compress (FILE* in, FILE* out, unsigned long BUFFER_SIZE)
 
     // Tworzenie drzewa binarnego i słownika
     treeNode *root = makeTree(q);
-//    printTree(root);
+#ifdef DEBUG
+    printTree(root);
+#endif
     unsigned char*** dict = make_dict(root, code_num);
 
     data_struct message = 
@@ -48,6 +52,7 @@ void compress (FILE* in, FILE* out, unsigned long BUFFER_SIZE)
     };
     code_struct code_info = {.char_code = {0}, .code_len = {0}};
     fill_char_code(&code_info, dict, code_num); // konwertuje słownik na strukturę
+#ifdef DEBUG
      for (int i = 0; i < 256; i++) // sprawdzenie poprawności zakodowania binarnego słownika
      {
          if (code_info.code_len[i])
@@ -57,6 +62,7 @@ void compress (FILE* in, FILE* out, unsigned long BUFFER_SIZE)
              print_str_in_bin(code_info.char_code[i], 1+(code_info.code_len[i]-1)/8, 0);
          }
      }
+#endif
     int compressed_dic_len; // kompresja i zapis do pliku słownika
     unsigned char* compressed_dic = dic_to_bin(dict, code_num, &compressed_dic_len);
     fwrite(compressed_dic, sizeof(char), compressed_dic_len, out); // dodajemy do pliku wyjściowego słownik
@@ -85,7 +91,9 @@ void compress (FILE* in, FILE* out, unsigned long BUFFER_SIZE)
     tmp[0] = (char)message.byte_pos;
     tmp[1] = (char)(code_num == 256 ? 0 : code_num); // jeżeli jest 256 wpisów w słowniku to wpisujemy tutaj 0. Trzeba to wziąć pod uwagę przy dekompresji
     fwrite(tmp, sizeof(char), 2, out);
-    //printf("Wielkosc pliku w bajtach: %d\n", input.length);   // Komunikat testowy
+#ifdef DEBUG
+    printf("Wielkosc pliku w bajtach: %ld\n", input.length);
+#endif
 
     free_dict(dict, code_num);
     freeTree(root);
