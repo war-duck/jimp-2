@@ -113,8 +113,6 @@ int main(int argc, char** argv) {
                     byte_tmp = byte_tmp << move;
                     if( (byte_tmp == codes[j]) && (code_lengths[j] <= left + res) ){      // jeżeli bajt pasuje bajtowi kodu i jest wystarczająco krótki
                         fprintf(out, "%c", symbols[j]);
-                        if(symbols[j] == 26)    // Jeżeli znak to [EOF]
-                            goto end;
 
                         // Odpowiednio przesuń bity w bajcie
                         byte = (byte << (code_lengths[j] - res));
