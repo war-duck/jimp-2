@@ -88,7 +88,7 @@ void compress (FILE* in, FILE* out, unsigned long BUFFER_SIZE)
         fwrite(message.data, sizeof(char), 1, out);
     fseek(out, 0, SEEK_SET); // na początku pliku wyjściowego wpisujemy liczbę niezapełnionych bitów w ostatnim bajcie
     char tmp[2];
-    tmp[0] = (char)message.byte_pos;
+    tmp[0] = (char)(message.byte_pos ? 8 - message.byte_pos : 0); // ilosc wolnych bitow - bitow w ostatnim bajcie nie bedacych czescia kodu
     tmp[1] = (char)(code_num == 256 ? 0 : code_num); // jeżeli jest 256 wpisów w słowniku to wpisujemy tutaj 0. Trzeba to wziąć pod uwagę przy dekompresji
     fwrite(tmp, sizeof(char), 2, out);
 #ifdef DEBUG
