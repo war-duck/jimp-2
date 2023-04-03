@@ -10,7 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-void print_binary(unsigned char c, int length) {
+void print_binary(long long int c, int length) {
     int i;
     for (i = length - 1; i >= 0; i--) {
         if (c & (1 << i)) {
@@ -44,24 +44,38 @@ int main(int argc, char** argv) {
     printf("Ilosc bajtow: %d\n", file_length);
     fseek(in, 0, SEEK_SET);
 
+    int freeBits = fgetc(in);
+    tracer++;
+    printf("Liczba wolnych bitow: %d\n", freeBits);
+
     int codes_num = fgetc(in);
     tracer++;
     printf("Liczba znakow: %d\n", codes_num);
 
     char *symbols = malloc(codes_num * sizeof *symbols);
     int *code_lengths = malloc(codes_num * sizeof code_lengths);
-    unsigned char *codes = malloc(codes_num * sizeof *codes);
+    long long int *codes = malloc(codes_num * sizeof *codes);
+    for(int i =  0; i < codes_num; i++)
+        codes[i] = 0;
 
     printf("Slownik:\n");
     for (int i = 0; i < codes_num; i++) {
         symbols[i] = fgetc(in);
         code_lengths[i] = fgetc(in);
-        codes[i] = fgetc(in);
-        codes[i] = codes[i] << (8 - code_lengths[i]);
-        tracer += 3;
+        tracer += 2;
+        for(int j = 0; j < ((code_lengths[i] - 1) / 8) + 1; j++) {
+            if(j > 0)
+                codes[i] = codes[i] << 8;
+            codes[i] = codes[i] | fgetc(in);
+//            int nextByte = fgetc(in);
+//            int move = code_lengths[i] % 8 == 0 ? code_lengths[i] : (code_lengths[i] / 8)*8 + 8;
+//            int move = (code_lengths[i] / 8) + (8 - code_lengths[i]);
+//            codes[i] = codes[i] << move;
+            tracer++;
+        }
         printf("%c - ", symbols[i]);
-        print_binary(codes[i], 8);
-        printf(" len: %d\n", code_lengths[i]);
+        print_binary(codes[i], code_lengths[i]);
+        printf("\n");
     }
 
     // Odczytaj treść pliku
