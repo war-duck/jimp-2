@@ -1,10 +1,5 @@
-// To jest dekompresor, najbrzydszy kod jaki w życiu napisałem ale działa
-// Pliki testowe:
-// test.bin "ALA MA[EOF]" (najprostszy test)
-// test2.bin "ALM M[EOF]" (testowanie odkodowywania bajtów tak, że gdy w jednym bajcie zostanie 2 nieużyte bity, to zostaną uwzględnione dalej)
-// test3.bin "ALA MA MAMA [EOF]" (wiele bajtów)
+// Kod dekompresujący plik
 
-// UWAGA nie działa odokodowanie dla kodów dłóższych niż 8 (jeden bajt)
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -40,15 +35,18 @@ int main(int argc, char** argv) {
     FILE *out = fopen(changeExtension(argv[1]), "w");
     long tracer = 0;    // znacznik, który bajt jest aktualnie czytany
 
+    // Znajdź długość pliku
     fseek(in, 0, SEEK_END);
     long file_length = ftell(in);
     printf("Ilosc bajtow: %d\n", file_length);
     fseek(in, 0, SEEK_SET);
 
+    // Ilość wolnych bitów w ostatnim bajcie
     int freeBits = fgetc(in);
     tracer++;
     printf("Liczba wolnych bitow: %d\n", freeBits);
 
+    // Liczba znaków w słowniku
     int codes_num = fgetc(in);
     tracer++;
     printf("Liczba znakow: %d\n", codes_num);
@@ -59,21 +57,22 @@ int main(int argc, char** argv) {
     for(int i =  0; i < codes_num; i++)
         codes[i] = 0;
 
+    // Odczytaj słownik
     printf("Slownik:\n");
     for (int i = 0; i < codes_num; i++) {
         symbols[i] = fgetc(in);
         code_lengths[i] = fgetc(in);
         tracer += 2;
+
         for(int j = 0; j < ((code_lengths[i] - 1) / 8) + 1; j++) {
             if(j > 0)
                 codes[i] = codes[i] << 8;
             codes[i] = codes[i] | fgetc(in);
-//            int nextByte = fgetc(in);
-//            int move = code_lengths[i] % 8 == 0 ? code_lengths[i] : (code_lengths[i] / 8)*8 + 8;
-//            int move = (code_lengths[i] / 8) + (8 - code_lengths[i]);
-//            codes[i] = codes[i] << move;
             tracer++;
         }
+
+        // Przesuń kody do lewej strony
+        // np. kod "010" -> "01000000"
         int move = ((code_lengths[i] % 8 == 0) ? 0 : (8 - (code_lengths[i] % 8)));
         codes[i] = codes[i] << move;
         printf("%c - ", symbols[i]);
@@ -84,33 +83,21 @@ int main(int argc, char** argv) {
     // Odczytaj treść pliku
     long long int byte = fgetc(in);
     int byteNum = 1;
-    int res = 0;    // liczba mówiąca, ile bitów zostało z poprzedniego bajtu
+    int res = 0;    // ile bitów zostało z poprzedniego bajtu
     while (tracer != file_length) {
         tracer++;
-        int left = 8;    // liczba mówiąca, ile bitów zostało w aktualnym bajcie
+        int left = 8;    // ile bitów zostało w aktualnym (nowym) bajcie
         while (left > 0) {
                 for (int j = 0; j < codes_num; j++) {
-                    // zamiast 8 musi być wyrażenie aryt.
-//                    int move = code_lengths[j] + res;
-// bug jest w zmiennej res
-//                    int move = 8 + res - code_lengths[j]; // to jakoś działa
-//                    int move = (code_lengths[j] % 8 == 0) ? 0 : (((code_lengths[j] / 8) + 1)*8 - code_lengths[j] + res);
+
+                    // Usuń niepotrzebne bity
+                    // np. długość kodu to 5: "11111111" -> "11111000"
                     int move = byteNum*8 - code_lengths[j] + res;
                     long long byte_tmp = byte >> move;
-//                    move = code_lengths[j] % 8 == 0 ? ((code_lengths[j]/8)*8 - code_lengths[j] + res) : ((code_lengths[j]/8)*8+8 - code_lengths[j] + res);
-//                    move = res + left - code_lengths[j];
-//                    move = (code_lengths[j] / 8)*8;
-//                    move += code_lengths[j] % 8;
-//                    if(code_lengths[j] % 8 == 0)
-//                        move = byteNum*8 - code_lengths[j];
-//                    else
-//                        move = byteNum*8 - ((code_lengths[j] / 8 )*8 + code_lengths[j]%8);
-
-//                    long long int byte_tmp = byte >> (8 - code_lengths[j] + res);   // tymczasowy bajt, który składa się z res poprzednich bitów i 8-code_length[j] nowych bitów
-//                    byte_tmp = byte_tmp << (8 - code_lengths[j] + res);
                     int codeByte = code_lengths[j] % 8 == 0 ? code_lengths[j]/8 : (code_lengths[j]/8 + 1);
                     move = codeByte * 8 - code_lengths[j];
                     byte_tmp = byte_tmp << move;
+
                     if( (byte_tmp == codes[j]) && (code_lengths[j] <= left + res) ){      // jeżeli bajt pasuje bajtowi kodu i jest wystarczająco krótki
                         if(symbols[j] != 13)    // pomiń znak "carriage return"
                             fprintf(out, "%c", symbols[j]);

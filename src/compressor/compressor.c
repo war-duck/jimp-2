@@ -33,6 +33,7 @@ void compress (FILE* in, FILE* out, unsigned long BUFFER_SIZE)
     for (int i = 0; i < 256; ++i)
         if (input.num[i]) {
             ++code_num;
+            // Stwórz treeNode i dodaj je do kolejki
             addToQue(q, makeTreeNode(i,input.num[i]));
         }
 
@@ -99,6 +100,7 @@ void compress (FILE* in, FILE* out, unsigned long BUFFER_SIZE)
     freeTree(root);
     free(input.num);
     free(input.data);
+    free(message.data);
     fclose(in);
     fclose(out);
 }
