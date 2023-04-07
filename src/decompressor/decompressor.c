@@ -1,16 +1,9 @@
-// To jest dekompresor, najbrzydszy kod jaki w życiu napisałem ale działa
-// Pliki testowe:
-// test.bin "ALA MA[EOF]" (najprostszy test)
-// test2.bin "ALM M[EOF]" (testowanie odkodowywania bajtów tak, że gdy w jednym bajcie zostanie 2 nieużyte bity, to zostaną uwzględnione dalej)
-// test3.bin "ALA MA MAMA [EOF]" (wiele bajtów)
-
-// UWAGA nie testowałem odczytywania kodów, które są dłuższe niż 8 bajtów.
-// + zmieniła się struktura pliku .cps , pierwszy bajt teraz mówi ile jest bitów wolnych
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-void print_binary(unsigned char c, int length) {
+#include "tree.h"
+#include "./../compressor/output.h"
+void print_binary(uchar c, int length) {
     int i;
     for (i = length - 1; i >= 0; i--) {
         if (c & (1 << i)) {
@@ -21,11 +14,11 @@ void print_binary(unsigned char c, int length) {
     }
 }
 
-unsigned char make_mask(int n) {
+uchar make_mask(int n) {
     return (1 << (8-n)) - 1;
 }
 
-char* changeExtension(char* filename){
+uchar* changeExtension(uchar* filename){
     int len = strlen(filename);
     filename[len - 3] = 't';
     filename[len - 2] = 'x';
@@ -34,77 +27,54 @@ char* changeExtension(char* filename){
 }
 
 int main(int argc, char** argv) {
-    printf("%s\n", argv[1]);
+    int BUF_SIZE = 50;
+    uchar* data = malloc (BUF_SIZE * sizeof (uchar));
     FILE *in = fopen(argv[1], "rb");
     FILE *out = fopen(changeExtension(argv[1]), "w");
-    long tracer = 0;    // znacznik, który bajt jest aktualnie czytany
 
     fseek(in, 0, SEEK_END);
     long file_length = ftell(in);
-    printf("Ilosc bajtow: %d\n", file_length);
     fseek(in, 0, SEEK_SET);
+    int free_bits = fgetc(in);
+    int code_num = fgetc(in);
+    if (code_num == 0)
+        code_num = 256;
+    int len, len_in_bytes;
+    uchar c, * code = calloc (32, sizeof(uchar)); // 32 - max dlugosc kodu zapisanego w bajtach
+    treeNode* tree = makeTreeNode ('\0', 0);
+    for (int i = 0; i < code_num; ++i)
+    {
+        c = fgetc(in);
+        len = fgetc(in);
+        len_in_bytes = 1 + (len - 1) / 8;
+        fread (code, sizeof (uchar), len_in_bytes, in);
 
-    int codes_num = fgetc(in);
-    tracer++;
-    printf("Liczba znakow: %d\n", codes_num);
-
-    char *symbols = malloc(codes_num * sizeof *symbols);
-    int *code_lengths = malloc(codes_num * sizeof code_lengths);
-    unsigned char *codes = malloc(codes_num * sizeof *codes);
-
-    printf("Slownik:\n");
-    for (int i = 0; i < codes_num; i++) {
-        symbols[i] = fgetc(in);
-        code_lengths[i] = fgetc(in);
-        codes[i] = fgetc(in);
-        codes[i] = codes[i] << (8 - code_lengths[i]);
-        tracer += 3;
-        printf("%c - ", symbols[i]);
-        print_binary(codes[i], 8);
-        printf(" len: %d\n", code_lengths[i]);
+        addCharCode (tree, c, code, len, len % 8 ? 8 - len % 8 : 0);
+        memset (code, 0, len_in_bytes); // czyszczenie zapelnionych bajtow - nie jest konieczne ale na wszelki wypadek
     }
-
-    // Odczytaj treść pliku
-    unsigned char byte = fgetc(in);
-    int res = 0;    // liczba mówiąca, ile bitów zostało z poprzedniego bajtu
-    while (tracer != file_length) {
-        tracer++;
-        int left = 8;    // liczba mówiąca, ile bitów zostało w aktualnym bajcie
-        while (left > 0) {
-                for (int j = 0; j < codes_num; j++) {
-                    unsigned char byte_tmp = byte >> (8 - code_lengths[j] + res);   // tymczasowy bajt, który składa się z res poprzednich bitów i 8-code_length[j] nowych bitów
-                    byte_tmp = byte_tmp << (8 - code_lengths[j]);
-                    if( (byte_tmp == codes[j]) && (code_lengths[j] <= left) ){      // jeżeli bajt pasuje bajtowi kodu i jest wystarczająco krótki
-                        fprintf(out, "%c", symbols[j]);
-                        if(symbols[j] == 26)    // Jeżeli znak to [EOF]
-                            goto end;
-
-                        // Odpowiednio przesuń bity w bajcie
-                        byte = (byte << (code_lengths[j] - res));
-                        left -= code_lengths[j] - res;
-                        res -= code_lengths[j];
-                        if(res < 0)
-                            res = 0;
-                        unsigned char mask = make_mask(res);
-                        byte = byte  & mask;
-                        break;
-                    }
-                    if(j == codes_num - 1){
-                        res = left;
-                        left = 0;
-                    }
+    int i, j;
+    treeNode* tree_walker; // wskaznik na obecny wierzcholek
+    long int read;
+    while (read = fread (data, sizeof (uchar), BUF_SIZE, in))
+    {
+        tree_walker = tree;
+        for (i = 0; i < read; ++i)
+        {
+            for (j = 0; j < 8; ++j) // dla kazdego bita
+            {
+                if (tree_walker->c != '\0') // jeżeli znalezlismy znak
+                {
+                    if (tree_walker->c != 13)
+                        fputc (tree_walker->c, out);
+                    tree_walker = tree;
                 }
+                tree_walker = tree_walker->offspring[get_bit(data[i], j)];
+            }
         }
-        byte = (byte<<8) + fgetc(in);
     }
-
-
-
-    end:
     fclose(in);
     fclose(out);
-    free(symbols);
-    free(code_lengths);
-    free(codes);
+    free(code);
+    freeTree (tree);
     return 0;
 }

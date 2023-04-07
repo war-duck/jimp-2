@@ -5,7 +5,7 @@
 #include <stdio.h>
 
 // Tworzy węzeł drzewa
-treeNode *makeTreeNode(unsigned char c, int is_leaf){
+treeNode *makeTreeNode(uchar c, int is_leaf){
     treeNode *node = malloc(sizeof *node);
     if(node != NULL){
         node->c = c;
@@ -15,13 +15,17 @@ treeNode *makeTreeNode(unsigned char c, int is_leaf){
     }
     return node;
 }
-
-int addCharCode(treeNode* tree, unsigned char c, unsigned char* code, int len, int byte_pos) // tworzy odpowiednie galezie prowadzace do podanego c
+uchar get_bit (uchar code, int byte_pos)
 {
-    char bit_val = *code & (0x80 >> byte_pos);
-    if (len > 0)
+    return (code & (0x80 >> byte_pos)) >> (7 - byte_pos);
+}
+
+int addCharCode(treeNode* tree, uchar c, uchar* code, int len, int byte_pos) // tworzy odpowiednie galezie prowadzace do podanego c
+{
+    uchar bit_val = get_bit (*code, byte_pos); // obecnie rozważany bit
+    if (len > 1)
     {
-        if (tree->offspring[bit_val] == NULL)
+        if (tree->offspring[bit_val] == NULL) // jeżeli nie ma utworzonego wierzchołka
             tree->offspring[bit_val] = makeTreeNode('\0', 0);
         addCharCode(tree->offspring[bit_val], c, (byte_pos == 7) ? code + 1 : code, len - 1, (byte_pos + 1) % 8);
     }
@@ -71,10 +75,11 @@ treeNode *makeTree(struct queue *q){
     return q->head->tree;
 }
 */
-static void printTabs(int level){
+void printTabs(int level){
     for(int i = 0; i < level; i++)
         printf("\t");
 }
+
 // Rekursywnie wyświetla zawartość węzła
 static void printTreeRec(treeNode *node, int level){
 
@@ -89,15 +94,12 @@ static void printTreeRec(treeNode *node, int level){
         printf("znak: [%c]\n", node->c);
     else   
         printf("<wezel>\n");
-    
     printTabs(level);
-
-    printTabs(level);
-    printf("left:\n");
+    printf("0:\n");
     printTreeRec(node->offspring[0], level+1);
 
     printTabs(level);
-    printf("right:\n");
+    printf("1:\n");
     printTreeRec(node->offspring[1], level+1);
 }
 
